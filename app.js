@@ -5,8 +5,11 @@ const passport = require("passport");
 const session = require("express-session");
 const mong = require("mongoose");
 const passportL = require("passport-local-mongoose")
-const app = exp();
 
+const app = exp();
+ 
+const UserRoute = require("./Routes/user");
+const AdminRoute = require("./Routes/adminRoute");
 
 const port = process.env.Port || 3000;
 const moncon= process.env.Mongoose || "mongodb://localhost:27017/eCommerce";
@@ -19,6 +22,8 @@ app.use(passport.session());
 app.use(bp.json());
 
 
+app.use("/api/user", UserRoute);
+app.use("/api/admin", AdminRoute)
 mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false}).then(() => {
     console.log("connected to database");
     app.listen(port, () => {
