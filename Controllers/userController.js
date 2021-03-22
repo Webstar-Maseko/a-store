@@ -23,6 +23,7 @@ exports.login = (req, res) =>{
         username: req.body.username,
         password: req.body.password
     });
+   
 
     req.login(user, (err) =>{
         if(!err){

@@ -5,14 +5,14 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-exports.register = (req, res) =>{
+exports.register = (req, res) =>{ 
     User.register({username: req.body.username, firstname: req.body.firstName, lastName: req.body.lastName, phone: req.body.phone, role: "admin"}, req.body.password, (err, user)=> {
         if(!err){
             passport.authenticate("local") (req,res, () =>{
                 res.send(user);
             })
         }else{
-            res.send(err);
+            res.send(err); 
         }
     })
 

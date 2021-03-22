@@ -1,19 +1,26 @@
 import Aheader from "./Admin/Aheader";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Alogin from "./Admin/Authentication/Alogin";
 import Aregister from "./Admin/Authentication/Aregister";
 import Footer from "./Footer";
+import Dashboard from "./Admin/Routes/Dashboard";
 
 
 function App() {
   return (
     <Router>
-         <Aheader/>
-         <div className="App container-fluid">
-         <Route path="/admin/login" component={Alogin} />
-         <Route path="/admin/register" component={Aregister} />
-    
-         </div>
+      <div className="App container-fluid">
+    <Route path={"/admin"} render={({ match: {path}}) => (
+      <>
+       <Aheader/>
+      <Switch>
+       <Route exact path={path + "/"} component={Dashboard} />
+       <Route exact path={path + "/login"} component={Alogin} />
+         <Route exact path={path + "/register"} component={Aregister} />
+      </Switch>
+      </>
+    )} />
+      </div>
          <Footer/>
     </Router>
   

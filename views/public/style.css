@@ -20,13 +20,8 @@ input {
   border-bottom-left-radius: 20% !important;
   border-left: none !important;
   border-right: none !important;
-  border-bottom: double cyan !important;
+  border-bottom: solid teal !important;
   width: 100% !important;
-}
-input:focus-within {
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
 }
 
 .App-link {
