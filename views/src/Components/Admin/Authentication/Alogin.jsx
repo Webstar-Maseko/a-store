@@ -6,16 +6,30 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {useForm} from "react-hook-form";
 import axios from "axios";
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/authContext';
+import Error from '../../Error';
 
 
 
-export default function Alogin(){
+export default function Alogin(props){
     let{register, handleSubmit,errors} = useForm();
-
+    const context = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
+    let [error, setError] = useState("");
+    let [load, isLoading] = useState(false);
+    {user && props.history.push("/admin")}
     function onSubmit(data){
+        isLoading(()=> true);
+        setError(() => "");
        axios.post("/api/admin/login", data)
-       .then(res => console.log(res.data))
-       .catch(err => alert(err));
+       .then(res => {
+           context.login(res.data);
+            props.history.push("/admin");
+           isLoading(()=> false);
+        
+       })
+       .catch(err => {setError(() => "username or password is not recognized");   isLoading(()=> false)});
     }
 
     return ( <Row className="mt-5" >
@@ -29,7 +43,7 @@ export default function Alogin(){
                         </Col>
                         <Col md={8}  className="text-center pt-2 pb-5">
                             <h5>Admin Login</h5>
-                            
+                            {error !== "" && <Error message={error}/>}
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                <Form.Control type="email" name="username" ref={register({required:"please enter your registered email"})} className="bt-0" placeholder="Email" />
                                
@@ -37,7 +51,7 @@ export default function Alogin(){
                                <Form.Control type="password" name="password" ref={register({required:true})} placeholder="Password" />
                                {errors.password && <span className="text-danger">invalid password</span>}
                                <br/>
-                               <Button variant="outline-success" type="submit" block>Login</Button>
+                               <Button variant="outline-success" type="submit" className={load ? "disabled" : null} block>{load ? "loading" : "Login"} </Button>
                             </Form>
                         </Col>
                     </Row>

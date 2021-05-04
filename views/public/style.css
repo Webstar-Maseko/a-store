@@ -23,6 +23,30 @@ input {
   border-bottom: solid teal !important;
   width: 100% !important;
 }
+.customNav{
+  width: 100% !important;
+  padding-right: 0 !important;
+  margin-top: 0 !important;
+  height: 100vh !important;
+  
+}
+.left{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.cat-inp {
+  display: inline-block !important;
+  width: auto !important;
+}
+.cat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
 
 .App-link {
   color: #61dafb;
@@ -33,7 +57,12 @@ input {
   justify-content: center;
   align-items: center;
 }
-
+.sidenav {
+  bottom: 0;
+  top: 0;
+  position: fixed;
+  left: 0;
+}
 footer {
   bottom: 0;
   position: relative;

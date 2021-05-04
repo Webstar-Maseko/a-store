@@ -1,8 +1,9 @@
 const exp = require("express");
-const { createCategory, getCategory } = require("../Controllers/CategoryController");
+const { createCategory, getCategory, deleteCategory } = require("../Controllers/CategoryController");
 const router = exp.Router();
 
-router.post("/create", createCategory)
+router.post("/create", createCategory);
+router.post("/deleteCategory", deleteCategory);
 router.get("/index", getCategory);
 
 module.exports = router;

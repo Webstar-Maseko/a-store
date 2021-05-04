@@ -6,7 +6,14 @@ exports.addItem  = (req,res)=>{
         Cart.findOne({user: req.user._id}).exec((error, cart) =>{
             error && res.send(error);
             if(cart){
-                
+               Cart.findOneAndUpdate({user: req.user._id}, {
+                  "$push":{
+                      "cartItems": req.body.cartItems
+                  } 
+               }).exec((error, data) =>{ 
+                   error ? res.send(error) : res.send(data)
+               })
+
 
             }else{
 
@@ -20,7 +27,7 @@ exports.addItem  = (req,res)=>{
             }
         })
 
-     
+
 
     }else{
         res.send("log in")
