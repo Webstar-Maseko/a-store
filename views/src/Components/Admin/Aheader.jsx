@@ -10,8 +10,8 @@ function Aheader(props) {
   let { url } = useRouteMatch();
   return (
     <Navbar
-      bg="light"
-      className="container-fluid"
+      bg="dark"
+      className="container-fluid navbar navbar-light"
       style={{ zIndex: 1 }}
       expand="lg"
     >

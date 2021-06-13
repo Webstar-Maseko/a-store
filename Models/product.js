@@ -38,7 +38,7 @@ const productSchema = new Schema({
    
     addedBy: {type: Schema.Types.ObjectId, ref: 'user', required:true},
     
-   
+     
 
 }, {timestamps:true})
 

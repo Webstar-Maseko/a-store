@@ -15,6 +15,9 @@
 .card {
   width: 100% !important;
 }
+button{
+  border: none;
+}
 input {
   border-top: none !important;
   border-bottom-left-radius: 20% !important;

@@ -12,8 +12,8 @@ createCateList = (categories, parent_id = null) => {
   for (let c of cat) {
     catList.push({
       _id: c._id,
+      parentId: c.parentId,
       name: c.name,
-      slug: c.slug,
       children: createCateList(categories, c._id),
     });
   }
@@ -25,10 +25,11 @@ exports.createCategory = (req, res) => {
     console.log(req.body);
     const cateG = {
       name: req.body.gory,
-      slug: slugify(req.body.gory),
     };
-    if (req.body.parentId) { 
+    if (req.body.parentId != "") {
       cateG.parentId = req.body.parentId;
+    } else {
+      cateG.slug = slugify(req.body.gory);
     }
 
     const cat = new category(cateG);
@@ -53,17 +54,14 @@ exports.getCategory = (req, res) => {
 };
 
 exports.deleteCategory = (req, res) => {
-  
   category.deleteMany(
     { $or: [{ _id: req.body.id }, { parentId: req.body.id }] },
     (err, docs) => {
-      console.log(err);
+     
       if (!err) {
-       
         category.find({}).exec((error, categories) => {
           if (error) res.send(error);
           else {
-           
             const catList = createCateList(categories);
             res.send(catList);
           }

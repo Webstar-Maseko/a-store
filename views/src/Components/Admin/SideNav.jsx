@@ -26,11 +26,7 @@ function SideNav() {
               Products
             </Nav.Link>
           </Nav.Item>
-          <Nav.Item className="pb-0">
-            <Nav.Link href={`${url}/sub-category`} eventKey="link-2">
-              Sub-Categories
-            </Nav.Link>
-          </Nav.Item>
+          
           <Nav.Item className="pb-0">
             <Nav.Link as={Link} to={`${url}/category`} eventKey="link-3">
               Category
