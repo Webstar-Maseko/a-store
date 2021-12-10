@@ -11,10 +11,10 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads");
+    cb(null, "./views/public/assets/images");
   },
   filename: (req, file, cb) => {
-    cb(null, shortid.generate() + "-" + file.originalname);
+    cb(null, shortid.generate());
   },
 });
 

@@ -14,6 +14,7 @@ createCateList = (categories, parent_id = null) => {
       _id: c._id,
       parentId: c.parentId,
       name: c.name,
+      image: c.image,
       children: createCateList(categories, c._id),
     });
   }
@@ -22,10 +23,12 @@ createCateList = (categories, parent_id = null) => {
 
 exports.createCategory = (req, res) => {
   if (req.user.role === "admin") {
-    console.log(req.body);
     const cateG = {
       name: req.body.gory,
     };
+    if(req.file != undefined){
+      cateG.image =  req.file.filename;
+    }
     if (req.body.parentId != "") {
       cateG.parentId = req.body.parentId;
     } else {
@@ -57,7 +60,6 @@ exports.deleteCategory = (req, res) => {
   category.deleteMany(
     { $or: [{ _id: req.body.id }, { parentId: req.body.id }] },
     (err, docs) => {
-     
       if (!err) {
         category.find({}).exec((error, categories) => {
           if (error) res.send(error);

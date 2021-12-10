@@ -3,8 +3,9 @@ const { model, Schema } = require("mongoose");
 const CategorySchema = new Schema(
   {
     name: String,
-    slug: { type: String},
+    slug: { type: String },
     parentId: String,
+    image: String,
   },
   { timestamps: true }
 );

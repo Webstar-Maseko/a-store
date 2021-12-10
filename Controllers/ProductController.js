@@ -2,7 +2,6 @@ const category = require("../Models/category");
 const product = require("../Models/product");
 0;
 exports.createProduct = (req, res) => {
- 
   try {
     if (req.user.role === "admin") {
       let images = [];
@@ -11,7 +10,7 @@ exports.createProduct = (req, res) => {
           return { img: file.filename };
         });
       }
-
+    
       const prod = new product({
         name: req.body.name,
         price: req.body.price,
@@ -40,8 +39,8 @@ exports.getProduct = (req, res) => {
   });
 };
 
-exports.deleteProduct = (req,res) =>{
-  product.deleteOne({_id: req.body.id}, (err, success) =>{
+exports.deleteProduct = (req, res) => {
+  product.deleteOne({ _id: req.body.id }, (err, success) => {
     if (!err) {
       product.find({}).exec((error, products) => {
         if (error) res.send(error);
@@ -52,5 +51,5 @@ exports.deleteProduct = (req,res) =>{
     } else {
       res.send(err);
     }
-  })
-}
+  });
+};

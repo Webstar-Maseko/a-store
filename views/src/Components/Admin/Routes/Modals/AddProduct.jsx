@@ -19,6 +19,7 @@ const AddProduct = (props) => {
       .catch((error) => alert(error));
   }
   function cateChange(e) {
+    console.log(e.target.value);
     setId(e.target.value);
   }
   useEffect(setCategory, []);
@@ -35,11 +36,45 @@ const AddProduct = (props) => {
     for (let i = 0; i < data.img.length; i++) {
       formData.append("img", data.img[i]);
     }
-
+ 
     axios
       .post("api/product/create", formData)
       .then((res) => alert("product added successfully"))
       .catch((err) => alert(err));
+  }
+
+  function renderCategoriesOption(cate) {
+    let myOptGroup = [];
+    console.log(cate);
+    for (let category of cate) {
+      myOptGroup.push(
+        <>
+          <option value={category._id}>{category.name} </option>
+          {category.children.length > 0 ? (
+            <optgroup label={category.name}>
+              {renderCategoriesOption(category.children)}
+            </optgroup>
+          ) : null}
+        </>
+      );
+    }
+    return myOptGroup;
+  }
+
+  function desiredCat(categories) {
+    let desiredCatArr = [];
+    for (let category of categories) {
+      desiredCatArr.push(
+        category.parentId === parent_id ? (
+          <option key={category._id} value={category._id}>
+            {category.name}
+          </option>
+        ) : category.children.length > 0 ? (
+          desiredCat(category.children)
+        ) : null
+      );
+    }
+    return desiredCatArr;
   }
 
   return (
@@ -92,7 +127,7 @@ const AddProduct = (props) => {
           {errors.description && (
             <span className="text-danger">{errors.message}</span>
           )}
-          <br/>
+          <br />
 
           <Form.Control
             name="size"
@@ -111,12 +146,13 @@ const AddProduct = (props) => {
             <option key="0" disabled selected value="" hidden>
               Select Parent category
             </option>
-            {categories.length > 0 &&
+            {renderCategoriesOption(categories)}
+            {/* {categories.length > 0 &&
               categories.map((item, index) => (
                 <option key={item._id} value={item._id}>
                   {item.name}
                 </option>
-              ))}
+              ))} */}
           </Form.Control>
           {errors.parent && (
             <span className="text-danger">{errors.message}</span>
@@ -131,7 +167,8 @@ const AddProduct = (props) => {
             <option key="0" disabled selected value="" hidden>
               Select Category
             </option>
-            {categories.length > 0 &&
+            {desiredCat(categories)}
+            {/* {categories.length > 0 &&
               categories.map((cate, i) => {
                 let child = cate.children.filter(
                   (item) => item.parentId === parent_id
@@ -141,7 +178,7 @@ const AddProduct = (props) => {
                     {item.name}
                   </option>
                 ));
-              })}
+              })} */}
           </Form.Control>
           {errors.category && (
             <span className="text-danger">{errors.message}</span>

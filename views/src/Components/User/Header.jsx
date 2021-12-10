@@ -1,36 +1,66 @@
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
+import {
+  MdOutlineShoppingBag,
+  MdPersonOutline,
+  MdSearch,
+} from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IconContext } from "react-icons";
+import Badge from "@material-ui/core/Badge";
+import MenuHeader from "./MenuHeader";
+import SearchHeader from "./SearchHeader";
+import { useEffect } from "react";
+import { IconButton } from "@material-ui/core";
 
 const Header = () => {
-  return (
-    <Navbar bg="light" expand="lg">
-    <h1>Hello world</h1>
+  function burgerClick() {
+    console.log("clicking");
+  }
 
-      <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#link">Link</Nav.Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">
-              Another action
-            </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">
-              Separated link
-            </NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
-       
-      </Navbar.Collapse>
-    </Navbar>
+  return (
+    <>
+      <Navbar bg="light" fixed="top">
+        <a className="burger">
+          <IconContext.Provider value={{ size: "2em" }}>
+            <GiHamburgerMenu className="mr-2 pt-1" />
+          </IconContext.Provider>
+        </a>
+
+        <Navbar.Brand href="#home">
+          <h2 style={{ fontWeight: 700, fontSize: "2.7rem" }}> a-store </h2>{" "}
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto mr-auto">
+            <SearchHeader />
+          </Nav>
+          <Nav className=" ml-auto mr-1">
+            <IconContext.Provider value={{ size: "1.4em" }}>
+              <IconButton className=" searchManipulate">
+                <MdSearch />
+              </IconButton>
+            </IconContext.Provider>
+
+            <IconContext.Provider value={{ size: "1.5em" }}>
+              <IconButton>
+                <MdPersonOutline className="" />
+              </IconButton>
+            </IconContext.Provider>
+
+            <IconContext.Provider value={{ size: "1.6em" }}>
+              <IconButton>
+                <Badge className="" badgeContent={1} color="secondary">
+                  <MdOutlineShoppingBag fontSize="large" />
+                </Badge>
+              </IconButton>
+            </IconContext.Provider>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+
+      <MenuHeader />
+    </>
   );
 };
 

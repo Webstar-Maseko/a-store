@@ -11,7 +11,8 @@ const Product = () => {
   let [category, setCategory] = useState([]);
   let [showModal, setShow] = useState(false);
   let [parent_id, setId] = useState("");
-  let [child_id, setChildId] = useState("");
+  let [dup, setDup] = useState([]);
+
   function getCategory() {
     axios
       .get("api/category/index")
@@ -22,31 +23,32 @@ const Product = () => {
   function getProducts() {
     axios
       .get("api/product/getProduct")
-      .then((res) => setProducts(() => res.data))
+      .then((res) => {
+        setProducts(() => res.data);
+        setDup(() => res.data);
+      })
       .catch((err) => alert(err));
   }
   function cateChange(e) {
     setId(e.target.value);
-     
   }
-  function tempCat(e){
-    setChildId(e.target.value);
-    console.log(child_id);
-    //getProducts();
 
-    products = products.filter((prod) => prod.category === child_id);
-    
-    if(child_id !== ""){
-      setProducts(products)
+  function tempCat(e) {
+    let temp = [];
+    console.log(e.target.value);
 
+    dup = products;
+    let dummy = dup;
+
+    temp = dummy.filter((prod) => prod.category === e.target.value);
+
+    if (e.target.value !== "") {
+      setDup(temp);
+    } else {
+      getCategory();
     }
-    //else{
-    //   getProducts();
-    // }
-    // console.log(products);
   }
-  
-  
+
   useEffect(getProducts, []);
   useEffect(getCategory, []);
   return (
@@ -56,21 +58,26 @@ const Product = () => {
           <option value="">Select category to filter by</option>
           {category.length > 0 &&
             category.map((item, index) => (
-              <option key={item._id} value={item._id} >{item.name}</option>
+              <option key={item._id} value={item._id}>
+                {item.name}
+              </option>
             ))}
         </select>
 
-        <select name="child" onChange={tempCat} >
+        <select name="child" onChange={tempCat}>
           <option value="">Select sub-category to filter by</option>
           {category.length > 0 &&
             category.map((item, index) => {
-              let  child = item.children.filter((cat) => cat.parentId == parent_id);
-              
-              return child.map((kid,kidInde) => <option key={kid._id} value={kid._id}>{kid.name}</option>)
+              let child = item.children.filter(
+                (cat) => cat.parentId === parent_id
+              );
 
-            }
-              
-            )}
+              return child.map((kid, kidInde) => (
+                <option key={kid._id} value={kid._id}>
+                  {kid.name}
+                </option>
+              ));
+            })}
         </select>
       </div>
 
@@ -90,8 +97,8 @@ const Product = () => {
           <th>Category</th>
         </thead>
         <tbody>
-          {products.length > 0 &&
-            products.map((item, index) => (
+          {dup.length > 0 &&
+            dup.map((item, index) => (
               <tr key={item._id}>
                 <td>{item.name} </td>
                 <td>R{item.price}</td>
@@ -101,7 +108,7 @@ const Product = () => {
                 <td>
                   {category.map((cat, ind) =>
                     cat.children
-                      .filter((child, a) => child._id == item.category)
+                      .filter((child, a) => child._id === item.category)
                       .map((parent, b) => cat.name + " > " + parent.name)
                   )}
                 </td>
@@ -109,10 +116,12 @@ const Product = () => {
                   <Fab
                     onClick={() => {
                       let id = item._id;
+                      console.log(id);
                       axios
-                        .post("/api/product/deleteProduct", { id })
+                        .post("/api/product/delete", { id })
                         .then((res) => setProducts(() => res.data))
                         .catch((err) => alert(err));
+                      setDup(products);
                     }}
                   >
                     <DeleteIcon />

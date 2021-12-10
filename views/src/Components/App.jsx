@@ -10,12 +10,25 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Product from "./Admin/Routes/Product";
 import Header from "./User/Header";
+import Home from "./Home";
+import GenericParentCategory from "./User/GenericParentCategory";
 
 function App() {
   return (
     <Router>
+      <Header />
       <div className="App ">
-        <Route path={"/"} render={({ match: { path } }) => <Header />} />
+        <Route
+          path={"/"}
+          render={({ match: { path } }) => (
+            <>
+              <Switch>
+                <Route exact path={path} component={Home} />
+                <Route path={path} component={GenericParentCategory} />
+              </Switch>
+            </>
+          )}
+        />
         <Route
           path={"/admin"}
           render={({ match: { path } }) => (

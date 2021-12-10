@@ -1,19 +1,16 @@
 import axios from "axios";
-import Table from "react-bootstrap/Table";
 import { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../context/authContext";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import DeleteIcon from "@material-ui/icons/Delete";
+import AddCategory from "./Modals/AddCategory";
 
 const Category = (props) => {
   let [cate, setCat] = useState([]);
   let { user, logout } = useContext(AuthContext);
   let { register, errors, handleSubmit } = useForm();
-
+  let [showModal, setShow] = useState(false);
   {
     !user && props.history.push("/admin/login");
   }
@@ -32,26 +29,76 @@ const Category = (props) => {
     setCategory();
   }
 
+  function renderCategories(cate) {
+    let myCategories = [];
+    for (let category of cate) {
+      myCategories.push(
+        <li key={category._id}>
+          {category.name} |{" "}
+          <button
+            onClick={() => {
+              let id = category._id;
+              axios
+                .post("/api/category/deleteCategory", { id })
+                .then((res) => setCat(() => res.data))
+                .catch((err) => alert(err));
+            }}
+          >
+            <DeleteIcon />
+          </button>
+          {category.children.length > 0 ? (
+            <ul>{renderCategories(category.children)}</ul>
+          ) : null}
+        </li>
+      );
+    }
+
+    return myCategories;
+  }
+  function renderCategoriesOption(cate) {
+    let myOptGroup = [];
+    console.log(cate);
+    for (let category of cate) {
+      myOptGroup.push(
+        <>
+          <option value={category._id}>{category.name} </option>
+          {category.children.length > 0 ? (
+            <optgroup label={category.name}>
+              {renderCategoriesOption(category.children)}
+            </optgroup>
+          ) : null}
+        </>
+      );
+    }
+    return myOptGroup;
+  }
+
   return (
     <div className="pt-5">
-      <Row>
-        <Col md={4}>
-          <h1>Category</h1>
-          <ul>
+      <h1>Category</h1>
+      <div className="text-right">
+        <Button onClick={() => setShow(true)}>Add Category</Button>
+      </div>
+      <AddCategory show={showModal} onHide={() => setShow(false)} />
+      {renderCategories(cate)}
+      {/* <ul>
             {cate.length > 0 &&
               cate.map((item, index) => (
                 <li key={item._id}>
-                  <h5>{item.name} | <button
-                            onClick={() => {
-                              let id = item._id;
-                              axios
-                                .post("/api/category/deleteCategory", { id })
-                                .then((res) => setCat(() => res.data))
-                                .catch((err) => alert(err));
-                            }}
-                          >
-                            <DeleteIcon />
-                          </button></h5>   
+                  <h5>
+                    {item.name} |{" "}
+                    <button
+                      onClick={() => {
+                        let id = item._id;
+                        axios
+                          .post("/api/category/deleteCategory", { id })
+                          .then((res) => setCat(() => res.data))
+                          .catch((err) => alert(err));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </h5>
                   {item.children.length > 0 &&
                     item.children.map((child, i) => (
                       <ul>
@@ -73,41 +120,8 @@ const Category = (props) => {
                     ))}
                 </li>
               ))}
-          </ul>
-        </Col>
-        <Col md={4}></Col>
-
-        <Col md={4}>
-          <Form onSubmit={handleSubmit(onSubmit)} className=" pb-5">
-            <Form.Control
-              className=""
-              type="text"
-              name="gory"
-              placeholder="Category name"
-              ref={register({ required: true })}
-            />
-            {errors.gory && (
-              <span className="text-danger">Category name cannot be null </span>
-            )}
-            <Form.Control
-              as="select"
-              name="parentId"
-              ref={register({ required: false })}
-            >
-              <option value="">Select category to create sub</option>
-              {cate.length > 0
-                ? cate.map((item, index) => (
-                    <option value={item._id}>{item.name}</option>
-                  ))
-                : ""}
-            </Form.Control>
-            <br />
-            <Button variant="dark" block type="submit">
-              Add Category
-            </Button>
-          </Form>
-        </Col>
-      </Row>
+          </ul> */}
+  
     </div>
   );
 };
