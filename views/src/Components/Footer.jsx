@@ -92,7 +92,7 @@ export default function Footer() {
           </a>
 
           <p className="d-block pt-2">
-            Follow us <b>@webstar_m</b>
+            Follow us <b>@webstar_m </b>
           </p>
         </div>
 
