@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import AddProduct from "./Modals/AddProduct";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { AuthContext } from "../../context/authContext";
 
-const Product = () => {
+const Product = (props) => {
   let [products, setProducts] = useState([]);
   let [category, setCategory] = useState([]);
   let [showModal, setShow] = useState(false);
   let [parent_id, setId] = useState("");
   let [dup, setDup] = useState([]);
+  const { user, logout } = useContext(AuthContext);
 
   function getCategory() {
     axios
@@ -48,7 +50,12 @@ const Product = () => {
       getCategory();
     }
   }
-
+  useEffect(() => {
+    function check() {
+      !user && props.history.push("/admin/login");
+    }
+    check();
+  });
   useEffect(getProducts, []);
   useEffect(getCategory, []);
   return (
@@ -81,7 +88,7 @@ const Product = () => {
         </select>
       </div>
 
-      <div className="text-right pb-3">
+      <div className="text-end pb-3">
         <Button onClick={() => setShow(true)}>Add Product</Button>
       </div>
 

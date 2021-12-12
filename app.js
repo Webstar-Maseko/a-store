@@ -15,7 +15,7 @@ const ProductRoute = require("./Routes/ProductRoute");
 const CartRoute = require("./Routes/cartRoute");
 
 const port = process.env.Port || 5000;
-const moncon= process.env.Mongoose || "mongodb://localhost:27017/eCommerce";
+const moncon= process.env.Mongo || "mongodb://localhost:27017/eCommerce";
 
 
 app.use(exp.urlencoded({extended:true}))

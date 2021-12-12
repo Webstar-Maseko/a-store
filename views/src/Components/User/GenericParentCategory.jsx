@@ -7,42 +7,37 @@ import axios from "axios";
 import ParentCategory from "../Utils/ParentCategory";
 
 export default function GenericParentCategory() {
-  const location = useLocation();
-  let [category, setCategory] = useState([]);
-  let [nCategory, setnCategory] = useState([]);
-  let [object, setObject] = useState({});
+  let[category, setCategory] = useState([]);
+  let [categ, setCateg] = useState([]);
+  let location = useLocation();
+ 
   let lname = location.pathname.slice(1);
-  // console.log(lname);
 
-  function getCategory() {
-    axios
-      .get("api/category/index")
-      .then((res) => setCategory(res.data))
-      .catch((err) => alert(err));
-  }
-  useEffect(getCategory, []);
+  useEffect(() =>{
+    async function getCategory() {
+      axios
+        .get("api/category/index")
+        .then((res) =>setCategory(res.data))
+        .catch((err) => alert(err));
+    }
+    getCategory();
+   }, []);
 
-  function filterC() {
-    setnCategory(() => {
-      category.filter((item, index) => item.name === lname);
-    });
-
-    //return nCategory;
-  }
-
-  useEffect(filterC, [nCategory]);
+   useEffect(() => {
+     function locate(){
+        setCateg(category.filter((cat) => cat.name === lname));
+     }
+     locate();
+   },[category, lname])
 
   return (
-    <div className="mt-5 pt-5">
+    <div className="mt-4 pt-5">
       <div className="text-center">
         <div
-          className="bgh text-center"
-          // style={{
-          //   backgroundImage: `url(${process.env.PUBLIC_URL}/Category/images/${object.image}`,
-          // }}
+         className="banner"
         >
-          {" "}
-          {nCategory.length}{" "}
+        {categ.length > 0 ? <img className="" src={`${process.env.PUBLIC_URL}/Category/images/${categ[0].image}`} alt="testing updating" /> : <h1>{lname}</h1> }
+       
         </div>
         <div className="text-center pt-2 pb-5">
           <p className="gePar">

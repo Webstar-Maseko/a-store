@@ -11,16 +11,18 @@ function Aheader(props) {
   return (
     <Navbar
       bg="dark"
-      className="container-fluid navbar navbar-light mt-5 pt-5"
+      variant="dark"
+      className="container-fluid navbar"
       style={{ zIndex: 1 }}
       expand="lg"
+      fixed="top"
     >
       <Navbar.Brand as={Link} to={`${url}`}>
         Admin
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
+        <Nav className="ms-auto">
           {user ? (
             <Nav.Link onClick={logout}>Logout</Nav.Link>
           ) : (

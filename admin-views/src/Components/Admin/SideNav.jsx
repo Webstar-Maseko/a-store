@@ -4,10 +4,14 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, useRouteMatch } from "react-router-dom";
 
 function SideNav() {
-  let {url} = useRouteMatch();
+  let { url } = useRouteMatch();
 
   return (
-    <Navbar expand="md" fixed className="pl-0 pt-0 navbar-dark bg-dark  pr-0">
+    <Navbar
+      expand="md"
+      fixed=""
+      className="pl-0 pt-0 navbar-dark bg-dark mt-5 pt-2  pr-0"
+    >
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse aria-orientation="vertical" id="basic-navbar-nav">
         <Nav
@@ -26,7 +30,7 @@ function SideNav() {
               Products
             </Nav.Link>
           </Nav.Item>
-          
+
           <Nav.Item className="pb-0">
             <Nav.Link as={Link} to={`${url}/category`} eventKey="link-3">
               Category

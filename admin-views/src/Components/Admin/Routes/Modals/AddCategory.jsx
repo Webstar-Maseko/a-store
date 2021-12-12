@@ -24,7 +24,7 @@ const AddCategory = (props) => {
 
     axios
       .post("/api/category/create", formData)
-      .then((res) => "")
+      .then((res) => {alert("Successfully saved")})
       .catch((error) => alert(error));
     setCategory();
   }
@@ -35,7 +35,7 @@ const AddCategory = (props) => {
     for (let category of cate) {
       myOptGroup.push(
         <>
-          <option value={category._id}>{category.name} </option>
+          <option value={category._id} key={category.name}>{category.name} </option>
           {category.children.length > 0 ? (
             <optgroup label={category.name}>
               {renderCategoriesOption(category.children)}

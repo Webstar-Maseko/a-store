@@ -85,6 +85,7 @@ export default function Footer() {
               <FaInstagram />
             </IconContext.Provider>
           </a>
+          .
           <a href="#" className="ml-3 mr-3">
             <IconContext.Provider value={{ size: "1.7em" }}>
               <BsYoutube />

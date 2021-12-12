@@ -11,15 +11,19 @@ const Category = (props) => {
   let { user, logout } = useContext(AuthContext);
   let { register, errors, handleSubmit } = useForm();
   let [showModal, setShow] = useState(false);
-  {
-    !user && props.history.push("/admin/login");
-  }
+
   function setCategory() {
     axios
       .get("/api/category/index")
       .then((res) => setCat((x) => res.data))
       .catch((error) => alert(error));
   }
+  useEffect(() => {
+    function check() {
+      !user && props.history.push("/admin/login");
+    }
+    check();
+  });
   useEffect(setCategory, []);
   function onSubmit(data) {
     axios
