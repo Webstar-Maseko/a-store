@@ -78,9 +78,9 @@ const Category = (props) => {
   }
 
   return (
-    <div className="pt-5">
+    <div className="">
       <h1>Category</h1>
-      <div className="text-right">
+      <div className="text-end">
         <Button onClick={() => setShow(true)}>Add Category</Button>
       </div>
       <AddCategory show={showModal} onHide={() => setShow(false)} />

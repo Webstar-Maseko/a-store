@@ -1,18 +1,4 @@
-.App {
-  min-height: 100vh;
-  padding-top: 45px;
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 .card {
   width: 88% !important;
 }
@@ -41,6 +27,9 @@ input {
   margin-top: 0 !important;
   height: 100vh !important;
 }
+.sideNav{
+  width: 15%;
+}
 .left {
   display: flex;
   flex-direction: column;
@@ -68,12 +57,7 @@ input {
   justify-content: center;
   align-items: center;
 }
-.sidenav {
-  bottom: 0;
-  top: 0;
-  position: fixed;
-  left: 0;
-}
+
 .dv-bg {
   background-image: url("banner.png");
   background-size: cover;

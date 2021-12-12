@@ -9,8 +9,8 @@ function SideNav() {
   return (
     <Navbar
       expand="md"
-      fixed=""
-      className="pl-0 pt-0 navbar-dark bg-dark mt-5 pt-2  pr-0"
+      fixed="top"
+      className="ps-0 pt-0 navbar-dark bg-dark mt-5 pt-2 sideNav pr-0"
     >
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse aria-orientation="vertical" id="basic-navbar-nav">
@@ -18,15 +18,15 @@ function SideNav() {
           variant="pills"
           data-spy="affix"
           defaultActiveKey={`${url}`}
-          className="nav flex-column sticky customNav  pt-1"
+          className="nav flex-column customNav  pt-1"
         >
           <Nav.Item className="pb-0">
-            <Nav.Link as={Link} to={`${url}`}>
+            <Nav.Link as={Link} to={`${url}`} eventKey="link-1">
               Orders
             </Nav.Link>
           </Nav.Item>
           <Nav.Item className="pb-0">
-            <Nav.Link as={Link} to={`${url}/products`} eventKey="link-1">
+            <Nav.Link as={Link} to={`${url}/products`} eventKey="link-2">
               Products
             </Nav.Link>
           </Nav.Item>
