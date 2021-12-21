@@ -5,33 +5,27 @@ import Button from "react-bootstrap/Button";
 import { AuthContext } from "../../context/authContext";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCategory from "./Modals/AddCategory";
-
+import {useDispatch, useSelector} from "react-redux"
+import { getCategories, deleteCategories} from "../../../Redux/store/slicers/CategorySlicer";
 const Category = (props) => {
-  let [cate, setCat] = useState([]);
+  //let [cate, setCat] = useState([]);
   let { user, logout } = useContext(AuthContext);
   let { register, errors, handleSubmit } = useForm();
   let [showModal, setShow] = useState(false);
+  const dispatch =useDispatch();
+  const cate = useSelector(state => state.category)
 
-  function setCategory() {
-    axios
-      .get("/api/category/index")
-      .then((res) => setCat((x) => res.data))
-      .catch((error) => alert(error));
-  }
   useEffect(() => {
     function check() {
       !user && props.history.push("/admin/login");
     }
     check();
   });
-  useEffect(setCategory, []);
-  function onSubmit(data) {
-    axios
-      .post("/api/category/create", data)
-      .then((res) => "")
-      .catch((error) => alert(error));
-    setCategory();
-  }
+
+
+  useEffect(() =>{
+    dispatch(getCategories())
+  }, [dispatch]);
 
   function renderCategories(cate) {
     let myCategories = [];
@@ -42,10 +36,7 @@ const Category = (props) => {
           <button
             onClick={() => {
               let id = category._id;
-              axios
-                .post("/api/category/deleteCategory", { id })
-                .then((res) => setCat(() => res.data))
-                .catch((err) => alert(err));
+             dispatch(deleteCategories(id))
             }}
           >
             <DeleteIcon />
@@ -59,23 +50,7 @@ const Category = (props) => {
 
     return myCategories;
   }
-  function renderCategoriesOption(cate) {
-    let myOptGroup = [];
-    console.log(cate);
-    for (let category of cate) {
-      myOptGroup.push(
-        <>
-          <option value={category._id}>{category.name} </option>
-          {category.children.length > 0 ? (
-            <optgroup label={category.name}>
-              {renderCategoriesOption(category.children)}
-            </optgroup>
-          ) : null}
-        </>
-      );
-    }
-    return myOptGroup;
-  }
+
 
   return (
     <div className="">
@@ -85,47 +60,6 @@ const Category = (props) => {
       </div>
       <AddCategory show={showModal} onHide={() => setShow(false)} />
       {renderCategories(cate)}
-      {/* <ul>
-            {cate.length > 0 &&
-              cate.map((item, index) => (
-                <li key={item._id}>
-                  <h5>
-                    {item.name} |{" "}
-                    <button
-                      onClick={() => {
-                        let id = item._id;
-                        axios
-                          .post("/api/category/deleteCategory", { id })
-                          .then((res) => setCat(() => res.data))
-                          .catch((err) => alert(err));
-                      }}
-                    >
-                      <DeleteIcon />
-                    </button>
-                  </h5>
-                  {item.children.length > 0 &&
-                    item.children.map((child, i) => (
-                      <ul>
-                        <li key={child._id}>
-                          {child.name}{" "}
-                          <button
-                            onClick={() => {
-                              let id = child._id;
-                              axios
-                                .post("/api/category/deleteCategory", { id })
-                                .then((res) => setCat(() => res.data))
-                                .catch((err) => alert(err));
-                            }}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        </li>
-                      </ul>
-                    ))}
-                </li>
-              ))}
-          </ul> */}
-  
     </div>
   );
 };

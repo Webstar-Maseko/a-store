@@ -4,18 +4,17 @@ import { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import {useDispatch, useSelector} from "react-redux";
+import { getCategories } from "../../../../Redux/store/slicers/CategorySlicer";
 
 const AddCategory = (props) => {
-  let [cate, setCat] = useState([]);
+  //let [cate, setCat] = useState([]);
   let { register, errors, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const cate = useSelector(state => state.category);
 
-  function setCategory() {
-    axios
-      .get("/api/category/index")
-      .then((res) => setCat((x) => res.data))
-      .catch((error) => alert(error));
-  }
-  useEffect(setCategory, []);
+  useEffect(() => {dispatch(getCategories)}, [dispatch]);
+
   function onSubmit(data) {
     const formData = new FormData();
     formData.append("img", data.img[0]);
@@ -26,18 +25,17 @@ const AddCategory = (props) => {
       .post("/api/category/create", formData)
       .then((res) => {alert("Successfully saved")})
       .catch((error) => alert(error));
-    setCategory();
+    //setCategory();
   }
 
   function renderCategoriesOption(cate) {
     let myOptGroup = [];
-    console.log(cate);
     for (let category of cate) {
       myOptGroup.push(
         <>
           <option value={category._id} key={category.name}>{category.name} </option>
           {category.children.length > 0 ? (
-            <optgroup label={category.name}>
+            <optgroup label={category.name} key={category.name}>
               {renderCategoriesOption(category.children)}
             </optgroup>
           ) : null}

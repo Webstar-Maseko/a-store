@@ -29,7 +29,14 @@ input {
 }
 .sideNav{
   width: 15%;
+  background-color: #171717;
+  margin-top: 3.5rem !important;
+
 }
+.active{
+  background-color: #FF4C29 !important;
+}
+
 .left {
   display: flex;
   flex-direction: column;
