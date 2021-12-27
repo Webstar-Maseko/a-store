@@ -8,37 +8,36 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useState } from "react";
 import Error from "../../Error";
+import { useSelector, useDispatch } from "react-redux";
+import { Register } from "../../../Redux/store/slicers/UserSlicer";
 
-let count = 0;
 export default function Aregister(props) {
-  count++;
-  let [userEx, setErr] = useState("");
-
+  const [loading, setLoading] = useState(false);
   let { register, handleSubmit, errors } = useForm();
-  function vConfirmpwd() {
-    if (userEx !== "") {
-      return userEx;
-    }
-    return true;
-  }
+  const dispatch = useDispatch();
+  const { message } = useSelector((state) => state.message);
+  // function vConfirmpwd() {
+  //   if (userEx !== "") {
+  //     return userEx;
+  //   }
+  //   return true;
+  // }
 
   function onSubmit(data) {
-    axios
-      .post("/api/admin/register", data)
-      .then((res) => {
-        if (res.data.name === "UserExistsError") {
-          setErr(() => res.data.message);
-        } else {
-          setErr(() => "");
-          props.history.push("/admin");
-        }
+    setLoading(true);
+    dispatch(Register(data))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+        props.history.push("/admin");
       })
-      .catch((err) => alert(err));
+      .catch((err) => {
+        setLoading(false);
+        alert(err);
+      });
   }
   return (
     <Row className="mt-5">
-      {console.log(count)}
-
       <Col md={2}></Col>
       <Col md={8}>
         <Card className="shadow">
@@ -46,7 +45,7 @@ export default function Aregister(props) {
             <SupervisedUserCircleIcon style={{ fontSize: "70" }} />
             <h5>Admin Register</h5>
             <br />
-            {userEx && <Error message={userEx} />}
+            {message && <Error message={message} />}
 
             <Form onSubmit={handleSubmit(onSubmit)}>
               <Form.Control
@@ -120,7 +119,7 @@ export default function Aregister(props) {
               )}
               <br />
               <br />
-              <Button type="submit">Register</Button>
+              <Button variant="outlined" {...loading && "loading"} type="submit">{loading ? "Loading..." : "Register"}</Button>
             </Form>
           </Card.Body>
         </Card>

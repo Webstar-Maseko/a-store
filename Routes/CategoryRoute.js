@@ -8,6 +8,7 @@ const router = exp.Router();
 const shortid = require("shortid");
 const path = require("path");
 const multer = require("multer");
+const passport = require("passport");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

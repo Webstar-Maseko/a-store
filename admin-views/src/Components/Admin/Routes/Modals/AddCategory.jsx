@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {useDispatch, useSelector} from "react-redux";
-import { getCategories } from "../../../../Redux/store/slicers/CategorySlicer";
+import { createCategory, getCategories } from "../../../../Redux/store/slicers/CategorySlicer";
 
 const AddCategory = (props) => {
   //let [cate, setCat] = useState([]);
@@ -21,10 +21,7 @@ const AddCategory = (props) => {
     formData.append("gory", data.gory);
     formData.append("parentId", data.parentId);
 
-    axios
-      .post("/api/category/create", formData)
-      .then((res) => {alert("Successfully saved")})
-      .catch((error) => alert(error));
+   dispatch(createCategory(formData))
     //setCategory();
   }
 
@@ -33,9 +30,9 @@ const AddCategory = (props) => {
     for (let category of cate) {
       myOptGroup.push(
         <>
-          <option value={category._id} key={category.name}>{category.name} </option>
+          <option value={category._id} key={category._id}>{category.name} </option>
           {category.children.length > 0 ? (
-            <optgroup label={category.name} key={category.name}>
+            <optgroup label={category.name} key={category._id}>
               {renderCategoriesOption(category.children)}
             </optgroup>
           ) : null}

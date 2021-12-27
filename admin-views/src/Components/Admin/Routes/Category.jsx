@@ -1,30 +1,28 @@
-import axios from "axios";
-import { useEffect, useState, useContext } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
-import { AuthContext } from "../../context/authContext";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCategory from "./Modals/AddCategory";
-import {useDispatch, useSelector} from "react-redux"
-import { getCategories, deleteCategories} from "../../../Redux/store/slicers/CategorySlicer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCategories,
+  deleteCategories,
+} from "../../../Redux/store/slicers/CategorySlicer";
+
 const Category = (props) => {
-  //let [cate, setCat] = useState([]);
-  let { user, logout } = useContext(AuthContext);
-  let { register, errors, handleSubmit } = useForm();
   let [showModal, setShow] = useState(false);
-  const dispatch =useDispatch();
-  const cate = useSelector(state => state.category)
+  const dispatch = useDispatch();
+  const cate = useSelector((state) => state.category);
+  const { isLoggedIn } = useSelector((state) => state.adminUser);
 
   useEffect(() => {
     function check() {
-      !user && props.history.push("/admin/login");
+      !isLoggedIn && props.history.push("/admin/login");
     }
     check();
   });
 
-
-  useEffect(() =>{
-    dispatch(getCategories())
+  useEffect(() => {
+    dispatch(getCategories());
   }, [dispatch]);
 
   function renderCategories(cate) {
@@ -36,7 +34,7 @@ const Category = (props) => {
           <button
             onClick={() => {
               let id = category._id;
-             dispatch(deleteCategories(id))
+              dispatch(deleteCategories(id));
             }}
           >
             <DeleteIcon />
@@ -51,7 +49,6 @@ const Category = (props) => {
     return myCategories;
   }
 
-
   return (
     <div className="">
       <h1>Category</h1>
@@ -59,7 +56,7 @@ const Category = (props) => {
         <Button onClick={() => setShow(true)}>Add Category</Button>
       </div>
       <AddCategory show={showModal} onHide={() => setShow(false)} />
-      {renderCategories(cate)}
+      {cate !== undefined && renderCategories(cate)}
     </div>
   );
 };

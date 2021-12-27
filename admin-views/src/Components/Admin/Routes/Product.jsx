@@ -1,19 +1,20 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import AddProduct from "./Modals/AddProduct";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { AuthContext } from "../../context/authContext";
+import { useSelector } from "react-redux";
 
 const Product = (props) => {
   let [products, setProducts] = useState([]);
   let [category, setCategory] = useState([]);
   let [showModal, setShow] = useState(false);
   let [parent_id, setId] = useState("");
+  const {isLoggedIn} = useSelector(state => state.adminUser);
   let [dup, setDup] = useState([]);
-  const { user, logout } = useContext(AuthContext);
+
 
   function getCategory() {
     axios
@@ -52,7 +53,7 @@ const Product = (props) => {
   }
   useEffect(() => {
     function check() {
-      !user && props.history.push("/admin/login");
+      !isLoggedIn && props.history.push("/admin/login");
     }
     check();
   });

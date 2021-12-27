@@ -5,40 +5,38 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/authContext";
+import {useState } from "react";
+
 import Error from "../../Error";
+import {useDispatch, useSelector} from "react-redux";
+import { Login } from "../../../Redux/store/slicers/UserSlicer";
+import {Redirect} from "react-router-dom";
+
 
 export default function Alogin(props) {
   let { register, handleSubmit, errors } = useForm();
-  const context = useContext(AuthContext);
-  const { user, logout } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const {isLoggedIn}= useSelector((state) => state.adminUser);
+  const {message} = useSelector((state) => state.message );
 
-  let [error, setError] = useState("");
+
   let [load, isLoading] = useState(false);
 
   function onSubmit(data) {
     isLoading(() => true);
-    setError(() => "");
-    axios
-      .post("/api/admin/login", data)
-      .then((res) => {
-        context.login(res.data);
-        props.history.push("/admin");
-        isLoading(() => false);
-      })
-      .catch((err) => {
-        setError(() => "username or password is not recognized");
-        isLoading(() => false);
-      });
+
+    dispatch(Login(data)).unwrap().then(() => {
+      isLoading(() => false)
+      props.history.push("/admin")
+ 
+    }).catch(() => {
+      isLoading(() => false)
+    })
+
   }
-  useEffect(() =>{
-      function check(){
-        user && props.history.push("/admin");
-      }
-      check();
-  })
+
+  if(isLoggedIn)
+    <Redirect to="/admin" />
 
   return (
     <Row className="mt-5">
@@ -52,7 +50,7 @@ export default function Alogin(props) {
               </Col>
               <Col md={8} className="text-center pt-2 pb-5">
                 <h5>Admin Login</h5>
-                {error !== "" && <Error message={error} />}
+                {message !== "" && <Error message={message} />}
                 <Form onSubmit={handleSubmit(onSubmit)}>
                   <Form.Control
                     type="email"

@@ -22,27 +22,33 @@ createCateList = (categories, parent_id = null) => {
 };
 
 exports.createCategory = (req, res) => {
-  if (req.user.role === "admin") {
-    const cateG = {
-      name: req.body.gory,
-    };
-    if(req.file != undefined){
-      cateG.image =  req.file.filename;
-    }
-    if (req.body.parentId != "") {
-      cateG.parentId = req.body.parentId;
+  if(req.user != undefined){
+    if (req.user.role === "admin") {
+      const cateG = {
+        name: req.body.gory,
+      };
+      if(req.file != undefined){
+        cateG.image =  req.file.filename;
+      }
+      if (req.body.parentId != "") {
+        cateG.parentId = req.body.parentId;
+      } else {
+        cateG.slug = slugify(req.body.gory);
+      }
+  
+      const cat = new category(cateG);
+      cat.save((err, categ) => {
+        if (err) res.send(err);
+        else res.send(categ);
+      });
     } else {
-      cateG.slug = slugify(req.body.gory);
+      res.status(401).send({error:"You are not authorized to perfom this action"});
     }
-
-    const cat = new category(cateG);
-    cat.save((err, categ) => {
-      if (err) res.send(err);
-      else res.send(categ);
-    });
-  } else {
-    res.send(req.user);
+  }else{
+    
+    res.status(401).json({error: "You are not logged in"});
   }
+ 
 };
 
 exports.getCategory = (req, res) => {
@@ -57,20 +63,30 @@ exports.getCategory = (req, res) => {
 };
 
 exports.deleteCategory = (req, res) => {
-  category.deleteMany(
-    { $or: [{ _id: req.body.id }, { parentId: req.body.id }] },
-    (err, docs) => {
-      if (!err) {
-        category.find({}).exec((error, categories) => {
-          if (error) res.send(error);
-          else {
-            const catList = createCateList(categories);
-            res.send(catList);
+  if(req.user !== undefined){
+    if(req.user.role === "admin"){
+      category.deleteMany(
+        { $or: [{ _id: req.body.id }, { parentId: req.body.id }] },
+        (err, docs) => {
+          if (!err) {
+            category.find({}).exec((error, categories) => {
+              if (error) res.send(error);
+              else {
+                const catList = createCateList(categories);
+                res.send(catList);
+              }
+            });
+          } else {
+            res.send(err);
           }
-        });
-      } else {
-        res.send(err);
-      }
+        }
+      );
+    }else{
+      res.status(401).json({error:"You don't have permission for this action"})
     }
-  );
+   
+  }else{
+    res.status(401).json({error: "You are not logged in"});
+  }
+ 
 };
