@@ -13,10 +13,9 @@ export const getCategories = createAsyncThunk("category/get", async () => {
 export const deleteCategories = createAsyncThunk(
   "category/delete",
   async (id) => {
-    console.log(id);
     const categories = await axios
 
-      .post("/api/category/deleteCategory", { id })
+      .post("/api/category/deleteCategory", {id} )
       .then((res) => res.data)
       .catch((err) => alert(err));
     return { categories };
@@ -34,6 +33,31 @@ export const createCategory = createAsyncThunk("category/add", async (data) => {
   return { categories };
 });
 
+const buildCategory = (parentId,categories, category) =>{
+  let newCategories = [];
+
+  for(let cat of categories){
+    if(cat._id === parentId){
+      newCategories.push({
+        ...cat, children: cat.children && cat.children.length > 0 ? buildCategory(parentId,[cat.children,{
+          _id: category._id,
+          parentId:category.parentId,
+          name: category.name,
+          image: category.image,
+          children: category.children
+        }], category) : []
+      })
+    }else{
+      newCategories.push({
+        ...cat, children: cat.children && cat.children.length > 0 ? buildCategory(parentId,cat.children, category) : []
+      })
+    }
+    
+  }
+
+  return newCategories;
+}
+
 export const CategorySlicer = createSlice({
   name: "category",
   initialState: [],
@@ -47,15 +71,8 @@ export const CategorySlicer = createSlice({
     },
 
     [createCategory.fulfilled]: (state, action) => {
-      console.log("the payload: " + action.payload.categories);
+      return action.payload.categories;
 
-      let index = state.findIndex(({_id}) => _id === action.payload.categories.parentId);
-
-      console.log(index);
-      //state[index].children.push(action.payload.categories);
-
-      //state.push(action.payload.categories);
-      getCategories()
     },
   },
 });

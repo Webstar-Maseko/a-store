@@ -1,4 +1,5 @@
 const slugify = require("slugify");
+const { findByIdAndDelete } = require("../Models/category");
 const category = require("../Models/category");
 
 createCateList = (categories, parent_id = null) => {
@@ -39,7 +40,15 @@ exports.createCategory = (req, res) => {
       const cat = new category(cateG);
       cat.save((err, categ) => {
         if (err) res.send(err);
-        else res.send(categ);
+        else {
+          category.find({}).exec((error, categories) => {
+            if (error) res.send(error);
+            else {
+              const catList = createCateList(categories);
+              res.send(catList);
+            }
+          });
+        }
       });
     } else {
       res.status(401).send({error:"You are not authorized to perfom this action"});
@@ -63,30 +72,39 @@ exports.getCategory = (req, res) => {
 };
 
 exports.deleteCategory = (req, res) => {
-  if(req.user !== undefined){
-    if(req.user.role === "admin"){
-      category.deleteMany(
-        { $or: [{ _id: req.body.id }, { parentId: req.body.id }] },
-        (err, docs) => {
-          if (!err) {
-            category.find({}).exec((error, categories) => {
-              if (error) res.send(error);
-              else {
-                const catList = createCateList(categories);
-                res.send(catList);
-              }
-            });
-          } else {
-            res.send(err);
+
+  try {
+    if(req.user !== undefined){
+      if(req.user.role === "admin"){
+  
+        let collection = req.body;
+        category.deleteMany(
+          { _id: {$in: collection} },
+          (err, docs) => {
+            if (!err) {
+              category.find({}).exec((error, categories) => {
+                if (error) res.send(error);
+                else {
+                  const catList = createCateList(categories);
+                  res.send(catList);
+                }
+              });
+            } else {
+              res.send(err);
+            }
+           
           }
-        }
-      );
+        );
+      }else{
+        res.status(401).json({error:"You don't have permission for this action"})
+      }
+     
     }else{
-      res.status(401).json({error:"You don't have permission for this action"})
+      res.status(401).json({error: "You are not logged in"});
     }
    
-  }else{
-    res.status(401).json({error: "You are not logged in"});
+  } catch (error) {
+    res.status(500).send(error)
   }
- 
+  
 };

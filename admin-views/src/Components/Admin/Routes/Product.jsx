@@ -5,32 +5,29 @@ import Button from "react-bootstrap/Button";
 import AddProduct from "./Modals/AddProduct";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { getCategories } from "../../../Redux/store/slicers/CategorySlicer";
+import { DeleteProduct, GetProduct } from "../../../Redux/store/slicers/ProductSlicer";
 
 const Product = (props) => {
-  let [products, setProducts] = useState([]);
-  let [category, setCategory] = useState([]);
   let [showModal, setShow] = useState(false);
   let [parent_id, setId] = useState("");
-  const {isLoggedIn} = useSelector(state => state.adminUser);
   let [dup, setDup] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const {isLoggedIn} = useSelector(state => state.adminUser);
+  const category = useSelector(state => state.category);
+  const products = useSelector(state => state.products)
+  
 
 
   function getCategory() {
-    axios
-      .get("api/category/index")
-      .then((res) => setCategory(res.data))
-      .catch((err) => alert(err));
+    dispatch(getCategories())
   }
 
   function getProducts() {
-    axios
-      .get("api/product/getProduct")
-      .then((res) => {
-        setProducts(() => res.data);
-        setDup(() => res.data);
-      })
-      .catch((err) => alert(err));
+  dispatch(GetProduct())
   }
   function cateChange(e) {
     setId(e.target.value);
@@ -57,8 +54,9 @@ const Product = (props) => {
     }
     check();
   });
-  useEffect(getProducts, []);
-  useEffect(getCategory, []);
+  useEffect(getProducts, [dispatch]);
+  useEffect(getCategory, [dispatch]);
+
   return (
     <div className="pt-5">
       <div className="text-left">
@@ -105,8 +103,8 @@ const Product = (props) => {
           <th>Category</th>
         </thead>
         <tbody>
-          {dup.length > 0 &&
-            dup.map((item, index) => (
+          {products.length > 0 &&
+            products.map((item, index) => (
               <tr key={item._id}>
                 <td>{item.name} </td>
                 <td>R{item.price}</td>
@@ -124,11 +122,7 @@ const Product = (props) => {
                   <Fab
                     onClick={() => {
                       let id = item._id;
-                      console.log(id);
-                      axios
-                        .post("/api/product/delete", { id })
-                        .then((res) => setProducts(() => res.data))
-                        .catch((err) => alert(err));
+                      dispatch(DeleteProduct(id));
                       setDup(products);
                     }}
                   >

@@ -2,32 +2,38 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
-import Label from "react-bootstrap/FormLabel";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { getCategories } from "../../../../Redux/store/slicers/CategorySlicer";
+import { CreateProduct } from "../../../../Redux/store/slicers/ProductSlicer";
+import SuccessToast from "../Toasts/SuccessToast";
 
 const AddProduct = (props) => {
-  let { register, errors, handleSubmit } = useForm();
-  let [categories, setCategories] = useState([]);
+  let {
+    register,
+    errors,
+    handleSubmit,
+    reset,
+    formState: { isSubmitSuccessful },
+  } = useForm();
   let [parent_id, setId] = useState("");
-  let [imgs, setImgs] = useState(undefined);
+  const [submittedData, setSubmittedData] = useState({});
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category);
+  // const products = useSelector(state => state.products)
 
   function setCategory() {
-    axios
-      .get("/api/category/index")
-      .then((res) => setCategories((x) => res.data))
-      .catch((error) => alert(error));
+    dispatch(getCategories());
   }
   function cateChange(e) {
     console.log(e.target.value);
     setId(e.target.value);
   }
-  useEffect(setCategory, []);
+  useEffect(setCategory, [dispatch]);
 
   function onSubmit(data) {
     const formData = new FormData();
     formData.append("name", data.name);
-
     formData.append("price", data.price);
     formData.append("quantity", data.quantity);
     formData.append("description", data.description);
@@ -36,20 +42,28 @@ const AddProduct = (props) => {
     for (let i = 0; i < data.img.length; i++) {
       formData.append("img", data.img[i]);
     }
- 
-    axios
-      .post("api/product/create", formData)
-      .then((res) => alert("product added successfully"))
-      .catch((err) => alert(err));
+    dispatch(CreateProduct(formData))
+      .unwrap()
+      .then(() => {
+        <SuccessToast isOpen={true}/>;
+        reset({ data });
+      });
   }
+
+  useEffect(() => {
+    console.log(isSubmitSuccessful);
+    console.log(submittedData);
+    isSubmitSuccessful && reset({ ...submittedData });
+  }, [isSubmitSuccessful, submittedData, reset]);
 
   function renderCategoriesOption(cate) {
     let myOptGroup = [];
-    console.log(cate);
     for (let category of cate) {
       myOptGroup.push(
         <>
-          <option value={category._id}>{category.name} </option>
+          <option key={category._id} value={category._id}>
+            {category.name}{" "}
+          </option>
           {category.children.length > 0 ? (
             <optgroup label={category.name}>
               {renderCategoriesOption(category.children)}
@@ -147,12 +161,6 @@ const AddProduct = (props) => {
               Select Parent category
             </option>
             {renderCategoriesOption(categories)}
-            {/* {categories.length > 0 &&
-              categories.map((item, index) => (
-                <option key={item._id} value={item._id}>
-                  {item.name}
-                </option>
-              ))} */}
           </Form.Control>
           {errors.parent && (
             <span className="text-danger">{errors.message}</span>
@@ -168,17 +176,6 @@ const AddProduct = (props) => {
               Select Category
             </option>
             {desiredCat(categories)}
-            {/* {categories.length > 0 &&
-              categories.map((cate, i) => {
-                let child = cate.children.filter(
-                  (item) => item.parentId === parent_id
-                );
-                return child.map((item, index) => (
-                  <option key={item._id} value={item._id}>
-                    {item.name}
-                  </option>
-                ));
-              })} */}
           </Form.Control>
           {errors.category && (
             <span className="text-danger">{errors.message}</span>
