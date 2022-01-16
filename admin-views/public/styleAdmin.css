@@ -15,7 +15,7 @@ input {
   border-left: none !important;
   border-right: none !important;
   border-bottom: solid teal !important;
-  width: 100% !important;
+  width: 50% ;
 }
 #custom-input {
   border: 1px !important;

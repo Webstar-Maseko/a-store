@@ -51,8 +51,6 @@ const AddProduct = (props) => {
   }
 
   useEffect(() => {
-    console.log(isSubmitSuccessful);
-    console.log(submittedData);
     isSubmitSuccessful && reset({ ...submittedData });
   }, [isSubmitSuccessful, submittedData, reset]);
 
