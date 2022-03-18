@@ -45,8 +45,8 @@ export default function Footer() {
             <FormControlLabel control={<Checkbox />} label="Kids" />
             <Paper component="form" className="ml-3 ml-sm-1 emailForm">
               <InputBase
-                className="pl-4 "
-                id="custom-input"
+                className=" "
+                id="custom-input2"
                 placeholder="Email Address"
                 
               />

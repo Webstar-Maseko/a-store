@@ -2,6 +2,9 @@
   min-height: 100vh;
   padding-top: 45px;
 }
+body{
+  /* font-family: 'Inter', sans-serif !important; */
+}
 
 .App-header {
   background-color: #282c34;
@@ -15,10 +18,15 @@
 }
 .card {
   width: 88% !important;
+  border: none !important;
 }
 .product-img {
   width: 100%;
   height: 50vh;
+}
+.product-cat{
+  width: 100%;
+  height: 60vh;
 }
 button {
   border: none;
@@ -34,6 +42,10 @@ input {
 #custom-input {
   border: 1px !important;
   width: 29rem !important;
+}
+#custom-input2 {
+  border: 1px !important;
+ width: 100%;
 }
 .customNav {
   width: 100% !important;
@@ -136,8 +148,20 @@ input {
   display: flex;
   margin: 0;
   position: relative;
-}
 
+}
+.wrapper{
+  background-color: aqua;
+  width: 100%;
+  margin-right: 10px;
+  border-radius: 15px;
+}
+.img-fluid{
+  height: auto;
+  max-width: 100%;
+  border-radius: 15px;
+  vertical-align: middle;
+}
 .menuHeader > ul > li > .span {
   display: block;
   line-height: 46px;
@@ -236,20 +260,21 @@ input {
 .spaceHead {
   letter-spacing: 4px;
   font-size: 23px;
-
+  color: #353c43;
   line-height: 1;
+  font-weight: 350;
 }
 .catImage {
-  max-width: 100%;
-  height: auto;
+  width: 6rem;
+  height:6rem;
   vertical-align: middle;
-  border-radius: 100%;
+  border-radius: 50%;
 }
 .blockCatImage {
   display: flex;
-  max-width: 93px;
+  width: 100px;
   justify-content: center;
-  border-radius: 50%;
+  height: auto;
   margin: auto;
 }
 .cateImageList {
@@ -259,9 +284,10 @@ input {
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
-  gap: 30px;
+  gap: 45px;
   justify-items: center;
   margin: auto;
+  align-items: flex-start;
 }
 .cateImageList > li {
   width: calc(80% / 4);
@@ -386,7 +412,7 @@ a:hover {
 }
 .emailForm {
   width: 30% !important;
-  height: 50px;
+  /* height: 50px; */
   margin-left: 0 !important;
 }
 .burger {

@@ -15,7 +15,7 @@ export const deleteCategories = createAsyncThunk(
   async (id) => {
     const categories = await axios
 
-      .post("/api/category/deleteCategory", {id} )
+      .post("/api/category/deleteCategory", id )
       .then((res) => res.data)
       .catch((err) => alert(err));
     return { categories };

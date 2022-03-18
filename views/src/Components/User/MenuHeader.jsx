@@ -1,9 +1,13 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategories } from "../Redux/store/slicers/CategorySlicer";
+
 
 const MenuHeader = () => {
-  let [category, setCategory] = useState([]);
   let [show, setShow] = useState(false);
+  const category = useSelector(state => state.category);
+  const dispatch = useDispatch();
 
   function scrollNav() {
     let scrollNow = window.scrollY;
@@ -12,15 +16,8 @@ const MenuHeader = () => {
     this.lastScroll = scrollNow;
   }
 
-  function getCategory() {
-    axios
-      .get("api/category/index")
-      .then((res) => setCategory(res.data))
-      .catch((err) => alert(err));
 
-  
-  }
-  useEffect(getCategory, []);
+  useEffect(() => {dispatch(getCategories())}, [dispatch]);
   useEffect(() => {
     window.addEventListener("scroll", scrollNav);
     return () => {

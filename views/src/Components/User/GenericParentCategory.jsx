@@ -5,23 +5,20 @@ import Col from "react-bootstrap/Col";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import ParentCategory from "../Utils/ParentCategory";
+import {useDispatch, useSelector} from "react-redux";
+import { getCategories } from "../Redux/store/slicers/CategorySlicer";
+
 
 export default function GenericParentCategory() {
-  let[category, setCategory] = useState([]);
   let [categ, setCateg] = useState([]);
   let location = useLocation();
- 
+  const category = useSelector(state => state.category  )
   let lname = location.pathname.slice(1);
+  const dispatch = useDispatch();
 
-  useEffect(() =>{
-    async function getCategory() {
-      axios
-        .get("api/category/index")
-        .then((res) =>setCategory(res.data))
-        .catch((err) => alert(err));
-    }
-    getCategory();
-   }, []);
+
+  useEffect(() =>{ dispatch(getCategories())
+   }, [dispatch]);
 
    useEffect(() => {
      function locate(){
@@ -29,6 +26,10 @@ export default function GenericParentCategory() {
      }
      locate();
    },[category, lname])
+
+
+
+
 
   return (
     <div className="mt-4 pt-5">

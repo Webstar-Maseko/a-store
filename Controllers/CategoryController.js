@@ -78,6 +78,7 @@ exports.deleteCategory = (req, res) => {
       if(req.user.role === "admin"){
   
         let collection = req.body;
+        console.log(collection);
         category.deleteMany(
           { _id: {$in: collection} },
           (err, docs) => {

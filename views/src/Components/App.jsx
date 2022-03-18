@@ -6,6 +6,10 @@ import Footer from "./Footer";
 import Header from "./User/Header";
 import Home from "./Home";
 import GenericParentCategory from "./User/GenericParentCategory";
+import Men from "./User/Categories/Mens"
+import Ladies from "./User/Categories/Ladies";
+import Kids from "./User/Categories/Kids";
+import Baby from "./User/Categories/Baby";
 
 
 function App() {
@@ -20,7 +24,11 @@ function App() {
             <>
               <Switch>
                 <Route exact path={path} component={Home} />
-                <Route  path={path} component={GenericParentCategory} />
+                <Route exact path="/Men" component={Men} />
+                <Route exact path="/Ladies" component={Ladies} />
+                <Route exact path="/Kids" component={Kids} />
+                <Route exact path="/Baby" component={Baby} />
+                {/* <Route  path={path} component={GenericParentCategory} /> */}
            
                 
                 {/* {category.length > 0 ?
