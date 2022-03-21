@@ -20,7 +20,7 @@ const Baby = () => {
 
   useEffect(() => {
     function locate() {
-      setBaby(category.filter((cat) => cat.name === "Baby"));
+      setBaby(category.filter((cat) => cat.slug === "baby"));
     }
     locate();
   }, [category]);
@@ -32,7 +32,7 @@ const Baby = () => {
           {Baby.length > 0 ? (
             <img
               className=""
-              src={`${process.env.PUBLIC_URL}/Category/images/${Baby[0].image}`}
+              src={`${process.env.PUBLIC_URL}/Category/images/${Baby[0].image[1].img}`}
               alt="testing updating"
             />
           ) : (
@@ -91,19 +91,19 @@ const Baby = () => {
           <Col xs={4} className="pl-0 pr-0">
             <ProductCategory
               img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk11/baby-callout01.png"
-              link="Baby/nursery-0-18-months/rompers"
+              link="baby/nursery-0-18-months/rompers"
             />
           </Col>
           <Col xs={4} className="pl-0 pr-0">
             <ProductCategory
               img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk11/baby-callout02.png"
-              link="Baby/Boys 3-14 Months/sets"
+              link="baby/Boys 3-14 Months/sets"
             />
           </Col>
           <Col xs={4} className="pl-0 pr-0">
             <ProductCategory
               img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk11/baby-callout03.png"
-              link="Baby/nursery-0-18-months/sleepsuits"
+              link="baby/nursery-0-18-months/sleepsuits"
             />
           </Col>
         </Row>
@@ -115,7 +115,7 @@ const Baby = () => {
           {Baby.length > 0 ? (
             <img
               className=""
-              src="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk11/baby-bspot-tbl.png"
+              src={`${process.env.PUBLIC_URL}/Category/images/${Baby[0].image[0].img}`}
               alt="testing updating"
             />
           ) : (
@@ -131,7 +131,7 @@ const Baby = () => {
           <Row>
             <Col xs={6} className="pl-0 pr-1 text-right">
               <a
-                href="Kids/boys-7-14-years/"
+                href="kids/boys-7-14-years/"
                 className="btn btn-outline-secondary pl-4 pr-4 text-dark"
               >
                 SHOP BOYS
@@ -139,7 +139,7 @@ const Baby = () => {
             </Col>
             <Col xs={6} className="pl-1 pr-0 text-left">
               <a
-                href="Kids/girls-7-14-years/"
+                href="kids/girls-7-14-years/"
                 className="btn btn-outline-secondary pl-4 pr-4 text-dark"
               >
                 SHOP GIRLS

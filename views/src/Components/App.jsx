@@ -10,7 +10,8 @@ import Men from "./User/Categories/Mens"
 import Ladies from "./User/Categories/Ladies";
 import Kids from "./User/Categories/Kids";
 import Baby from "./User/Categories/Baby";
-
+import Products from "./User/Products/Products";
+import Product from "./User/Products/Product";
 
 function App() {
 
@@ -24,10 +25,12 @@ function App() {
             <>
               <Switch>
                 <Route exact path={path} component={Home} />
-                <Route exact path="/Men" component={Men} />
-                <Route exact path="/Ladies" component={Ladies} />
-                <Route exact path="/Kids" component={Kids} />
-                <Route exact path="/Baby" component={Baby} />
+                <Route exact path="/men" component={Men} />
+                <Route exact path="/ladies" component={Ladies} />
+                <Route exact path="/kids" component={Kids} />
+                <Route exact path="/baby" component={Baby} />
+                <Route path="/:root/:sub/:category" component={Products}/>
+                <Route path="/:product" component={Product} />
                 {/* <Route  path={path} component={GenericParentCategory} /> */}
            
                 

@@ -21,7 +21,7 @@ const Ladies = () => {
 
   useEffect(() => {
     function locate() {
-      setLadies(category.filter((cat) => cat.name === "Ladies"));
+      setLadies(category.filter((cat) => cat.slug === "ladies"));
     }
     locate();
   }, [category]);
@@ -33,7 +33,7 @@ const Ladies = () => {
           {ladies.length > 0 ? (
             <img
               className=""
-              src={`${process.env.PUBLIC_URL}/Category/images/${ladies[0].image}`}
+              src={`${process.env.PUBLIC_URL}/Category/images/${ladies[0].image[0].img}`}
               alt="testing updating"
             />
           ) : (
@@ -48,7 +48,7 @@ const Ladies = () => {
           <Row>
             <Col xs={6} className="pl-0 pr-1 text-right">
             <a
-            href="Ladies/fashion-faves"
+            href="ladies/fashion-faves"
             className="btn btn-outline-secondary pl-3 pr-3 text-dark"
           >
             SHOP NOW
@@ -105,13 +105,13 @@ const Ladies = () => {
         </div>
         <Row>
           <Col xs={4} className="pl-0 pr-0">
-            <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk06/ladies_callout03.png" link="Ladies/Shop by category/Dresses" />
+            <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk06/ladies_callout03.png" link="ladies/Shop-by-category/dresses" />
           </Col>
           <Col xs={4} className="pl-0 pr-0">
-          <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk06/ladies_callout01.png" link="Ladies/Shop by category/Active tops" />
+          <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk06/ladies_callout01.png" link="ladies/Shop-by-category/active-tops" />
           </Col>
           <Col xs={4} className="pl-0 pr-0">
-          <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk05/03Mens_CO.png" link="Ladies/Shop by category/Fashion tops" />
+          <ProductCategory img="https://cdn.omni.mrpg.com/cdn/01/content/2022/wk05/03Mens_CO.png" link="ladies/Shop-by-category/fashion-tops" />
           </Col>
         </Row>
       </div>

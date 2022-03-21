@@ -20,7 +20,7 @@ const Kids = () => {
 
   useEffect(() => {
     function locate() {
-      setKids(category.filter((cat) => cat.name === "Kids"));
+      setKids(category.filter((cat) => cat.slug === "kids"));
     }
     locate();
   }, [category]);
@@ -32,7 +32,7 @@ const Kids = () => {
           {kids.length > 0 ? (
             <img
               className=""
-              src={`${process.env.PUBLIC_URL}/Category/images/${kids[0].image}`}
+              src={`${process.env.PUBLIC_URL}/Category/images/${kids[0].image[0].img}`}
               alt="testing updating"
             />
           ) : (
@@ -124,7 +124,7 @@ const Kids = () => {
           {kids.length > 0 ? (
             <img
               className=""
-              src={`${process.env.PUBLIC_URL}/Category/images/Okids.png`}
+              src={`${process.env.PUBLIC_URL}/Category/images/${kids[0].image[1].img}`}
               alt="testing updating"
             />
           ) : (

@@ -17,10 +17,12 @@ const AddCategory = (props) => {
 
   function onSubmit(data) {
     const formData = new FormData();
-    formData.append("img", data.img[0]);
+ 
     formData.append("gory", data.gory);
     formData.append("parentId", data.parentId);
-
+    for (let i = 0; i < data.img.length; i++) {
+      formData.append("img", data.img[i]);
+    }
    dispatch(createCategory(formData))
     //setCategory();
   }
@@ -84,6 +86,7 @@ const AddCategory = (props) => {
               label="Images"
               name="img"
               type="file"
+              multiple
               accept="image/*"
               ref={register}
             />

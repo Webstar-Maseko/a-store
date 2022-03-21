@@ -57,7 +57,6 @@ const Category = (props) => {
 
   function setCategories(categories, newList = []){
 
-  
     for(let category of categories){
       newList.push({value: category._id, name:category.name, image:category.image, parentId:category.parentId});
       if(category.children.length > 0){

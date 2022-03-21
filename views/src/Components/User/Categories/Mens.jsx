@@ -20,7 +20,7 @@ const Men = () => {
 
   useEffect(() => {
     function locate() {
-      setMen(category.filter((cat) => cat.name === "Men"));
+      setMen(category.filter((cat) => cat.slug === "men"));
     }
     locate();
   }, [category]);
@@ -32,7 +32,7 @@ const Men = () => {
           {men.length > 0 ? (
             <img
               className=""
-              src={`${process.env.PUBLIC_URL}/Category/images/${men[0].image}`}
+              src={`${process.env.PUBLIC_URL}/Category/images/${men[0].image[0].img}`}
               alt="testing updating"
             />
           ) : (

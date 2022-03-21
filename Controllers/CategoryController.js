@@ -1,20 +1,27 @@
-const slugify = require("slugify");
+const slug = require("slug");
 const { findByIdAndDelete } = require("../Models/category");
 const category = require("../Models/category");
 
+
+//Create arrays of category nest them by parents
 createCateList = (categories, parent_id = null) => {
   const catList = [];
   let cat;
+  //Create an outer parent/root
   if (parent_id === null) {
     cat = categories.filter((x) => x.parentId == undefined);
-  } else {
+  } 
+  //Create a child of a parent
+  else {
     cat = categories.filter((x) => x.parentId == parent_id);
   }
+
   for (let c of cat) {
     catList.push({
       _id: c._id,
       parentId: c.parentId,
       name: c.name,
+      slug:c.slug,
       image: c.image,
       children: createCateList(categories, c._id),
     });
@@ -22,22 +29,33 @@ createCateList = (categories, parent_id = null) => {
   return catList;
 };
 
+
+//create a category
 exports.createCategory = (req, res) => {
+
   if(req.user != undefined){
     if (req.user.role === "admin") {
+
+      let images = [];
+      if (req.files.length > 0) {
+        images = req.files.map((file) => {
+          return { img: file.filename };
+        });
+      }
+
       const cateG = {
         name: req.body.gory,
+        slug:slug(req.body.gory),
+        image:images
       };
-      if(req.file != undefined){
-        cateG.image =  req.file.filename;
-      }
+
       if (req.body.parentId != "") {
         cateG.parentId = req.body.parentId;
-      } else {
-        cateG.slug = slugify(req.body.gory);
       }
   
       const cat = new category(cateG);
+
+
       cat.save((err, categ) => {
         if (err) res.send(err);
         else {
@@ -78,7 +96,7 @@ exports.deleteCategory = (req, res) => {
       if(req.user.role === "admin"){
   
         let collection = req.body;
-        console.log(collection);
+
         category.deleteMany(
           { _id: {$in: collection} },
           (err, docs) => {
@@ -93,7 +111,6 @@ exports.deleteCategory = (req, res) => {
             } else {
               res.send(err);
             }
-           
           }
         );
       }else{

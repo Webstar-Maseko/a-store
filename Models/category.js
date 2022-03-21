@@ -5,7 +5,10 @@ const CategorySchema = new Schema(
     name: String,
     slug: { type: String },
     parentId: String,
-    image: String,
+    image: [ {
+        img : {type: String, required: true}
+
+    }]
   },
   { timestamps: true }
 );

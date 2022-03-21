@@ -28,7 +28,7 @@ const MenuHeader = () => {
   function filt(cate) {
     let name = null;
     for (let cat of category) {
-      if (cat._id === cate.parentId) name = cat.name;
+      if (cat._id === cate.parentId) name = cat.slug;
     }
     return name;
   }
@@ -39,9 +39,9 @@ const MenuHeader = () => {
       myCategories.push(
         <li key={category._id}>
           {category.parentId ? (
-            <a href={`${tempName}/${category.name}`}> {category.name} </a>
+            <a href={`${tempName}/${category.slug}`}> {category.name} </a>
           ) : (
-            <a href={category.name} className="span">
+            <a href={category.slug} className="span">
               {category.name}
             </a>
           )}
