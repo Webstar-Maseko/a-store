@@ -32,11 +32,11 @@ button {
   border: none;
 }
 input {
-  border-top: none !important;
+  /* border-top: none !important;
   border-bottom-left-radius: 20% !important;
   border-left: none !important;
   border-right: none !important;
-  border-bottom: solid teal !important;
+  border-bottom: solid teal !important; */
   width: 100%;
 }
 #custom-input {
@@ -46,6 +46,12 @@ input {
 #custom-input2 {
   border: 1px !important;
  width: 100%;
+}
+
+#custom-input3 {
+ border: 1px;
+ width: 32px;
+ text-align: center;
 }
 .customNav {
   width: 100% !important;
@@ -435,9 +441,44 @@ a:hover {
   color: #000;
   display: none;
 }
+.prodDisplay{
+  /* height: 40% !important; */
+  height: 38rem;
+}
 footer {
   bottom: 0;
   position: relative;
+}
+label, strong,span {
+  color: #6e6e77;
+}
+
+.itemlabel{
+  font-size: 12px ;
+  letter-spacing: .4px;
+  font-weight: 400;
+}
+.avail{
+  color: red;
+}
+.quantity{
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+ font-size: 10px;
+  
+}
+.caption{
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1.35px;
+  text-transform: uppercase;
+  color: black ;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 
