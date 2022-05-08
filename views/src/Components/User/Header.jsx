@@ -10,13 +10,15 @@ import { IconContext } from "react-icons";
 import Badge from "@material-ui/core/Badge";
 import MenuHeader from "./MenuHeader";
 import SearchHeader from "./SearchHeader";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { IconButton } from "@material-ui/core";
+import Auth from "./Modals/Auth";
 
 const Header = () => {
   function burgerClick() {
     console.log("clicking");
   }
+  let [modalShow,setModalShow] = useState(false)
 
   return (
     <>
@@ -43,10 +45,11 @@ const Header = () => {
             </IconContext.Provider>
 
             <IconContext.Provider value={{ size: "1.5em" }}>
-              <IconButton>
+              <IconButton onClick={() => setModalShow(true)}>
                 <MdPersonOutline className="" />
               </IconButton>
             </IconContext.Provider>
+            <Auth show={modalShow} onHide={() => setModalShow(false)} />
 
             <IconContext.Provider value={{ size: "1.6em" }}>
               <IconButton>

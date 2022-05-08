@@ -443,7 +443,7 @@ a:hover {
 }
 .prodDisplay{
   /* height: 40% !important; */
-  height: 38rem;
+  height: 43rem;
 }
 footer {
   bottom: 0;
@@ -454,7 +454,7 @@ label, strong,span {
 }
 
 .itemlabel{
-  font-size: 12px ;
+  /* font-size: 12px ; */
   letter-spacing: .4px;
   font-weight: 400;
 }
@@ -475,13 +475,54 @@ label, strong,span {
   text-transform: uppercase;
   color: black ;
 }
+.custom-rad{
+  border-radius: 32px !important;
+  height: 37px;
+  min-width: 37px;
+  border: 0.1px solid gray !important;
+  padding: .375rem .65rem !important;
+  
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+.oAuth{
+  display: inline-block !important;
+  /* font-size: 14px; */
+  color:#000;
+  transform: translateY(-61%);
+  background-color: #fff;
+}
+.sect{
+  max-width: 310px;
+  margin: 0 auto;
+}
 
+.strike{
+  margin: 64px auto 0;
+  max-width: 310px;
+  border-top: 1px solid black;
+  
+}
+.modalSize{
+  width: 80% !important;
+}
+.mod{
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
 
+.modPar{
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: .25px;
+}
+.btn-danger{
+  background-color: #d71920 !important;
+}
 
 
 /* =====================Media queries=============================== */

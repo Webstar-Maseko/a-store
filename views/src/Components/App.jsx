@@ -30,7 +30,7 @@ function App() {
                 <Route exact path="/kids" component={Kids} />
                 <Route exact path="/baby" component={Baby} />
                 <Route path="/:root/:sub/:category" component={Products}/>
-                <Route path="/:product" component={Product} />
+                <Route exact path="/:product" component={Product} />
                 {/* <Route  path={path} component={GenericParentCategory} /> */}
            
                 

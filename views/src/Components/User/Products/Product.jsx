@@ -13,13 +13,16 @@ import Input from "@material-ui/core/Input";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import ListDrop from "../../Utils/ListDrop";
 import Divider from '@material-ui/core/Divider';
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
+
 
 
 const Product = (props) => {
   const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
-  let [name, setName] = useState(props.match.params);
   let [quantity, setQuantiy] = useState(1);
+  let [radioValue,setRadioValue] = useState("");
 
 
   useEffect(() => {
@@ -55,11 +58,16 @@ const Product = (props) => {
     }
   };
 
+  const handleRadioChange = (e) =>{
+    setRadioValue(() => e.target.value);
+    console.log(radioValue);
+
+  }
+
 
   return (
     <div className="pt-3 mt-5">
       <div className="container-fluid mt-3">
-        {console.log(product)}
         <Row>
           <Col md={7} className="prodDisplay">
             <Carousel variant="dark">
@@ -94,13 +102,19 @@ const Product = (props) => {
                   <label>SKU: 123459678</label>
 
                   <label className="d-block mt-2">Color: </label>
-                  <Radio />
+                  <label htmlFor=""> <Radio /> <span>A</span></label>
+                 
 
-                  <label className="d-block mt-2">Size: </label>
-                  <Radio />
-                  <Radio />
-                  <Radio />
-                  <Radio />
+                  <label className="d-block mt-2">Size: {radioValue} </label>
+                  <ButtonGroup toggle>
+                    <ToggleButton key={"nbdsjvdsfvc"} type="radio" checked={radioValue === "Siya"} onChange={handleRadioChange} value="Siya" variant={radioValue === "Siya" ? "secondary": "secondary-outline"} className="mr-3 custom-rad ">32 reg</ToggleButton>
+
+
+                    
+                    <ToggleButton key={"nbdsjvdsfvcd"} checked={radioValue === "Webstar"} onChange={handleRadioChange} value="Webstar" type="radio" variant={radioValue === "Webstar" ? "secondary": "secondary-outline"} className="mr-2 custom-rad">M</ToggleButton>
+                    
+                  </ButtonGroup>
+           
 
                   <label htmlFor="" className="d-block pt-2">
                     Quantity:
@@ -125,7 +139,7 @@ const Product = (props) => {
 
                   <div className="text-center">
                     <label className="itemlabel">Availability: </label>
-                    <label className="itemlabel text-danger">
+                    <label className="itemlabel text-danger font-weight-bold">
                       {" "}
                       In stock. Bag it now!
                     </label>
@@ -136,7 +150,8 @@ const Product = (props) => {
                 </CardContent>
                 <CardActions></CardActions>
               </Card>
-              <div className="pt-4">
+
+              <div className="pt-2">
               <ListDrop name="DESCRIPTION">
               {product.description}
                 <br />
@@ -164,32 +179,7 @@ const Product = (props) => {
               
              
               </ListDrop>
-                {/* <List
-                  component="nav"
-                >
-                <ListItem button onClick={handleOpen} className="pl-0">
-                <ListItemText primary="DESCRIPTION"  />
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={open} unmountOnExit>
-                {product.description}
-                <br />
-                <br />
-                <br />
-                <b>Fabric Content:</b>
-                <br />
-                Lorem ipsum dolor sit.
-                <br />
-                <br />
-                <b>Wash Care:</b>
-                <br />
-                Lorem, ipsum dolor.
-                </Collapse>
-
-                </List> */}
-                
-
-                
+       
               </div>
             </div>
           </Col>
