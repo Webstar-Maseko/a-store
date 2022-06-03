@@ -98,7 +98,7 @@ const Product = (props) => {
           <th>Name</th>
           <th>Price</th>
           <th>Quantity</th>
-          <th>Size</th>
+          <th>Sizes</th>
           <th>Description</th>
           <th>Category</th>
         </thead>
@@ -109,7 +109,7 @@ const Product = (props) => {
                 <td>{item.name} </td>
                 <td>R{item.price}</td>
                 <td>{item.quantity}</td>
-                <td>{item.size}</td>
+                <td>{item.size.join()}</td>
                 <td>{item.description}</td>
                 <td>
                   {category.map((cat, ind) =>

@@ -60,8 +60,20 @@ const Product = (props) => {
 
   const handleRadioChange = (e) =>{
     setRadioValue(() => e.target.value);
-    console.log(radioValue);
+   
 
+  }
+
+  const handleClick = () => {
+    let cart = {};
+
+    cart.sku = product.sku;
+    cart.color = product.color;
+    cart.quantity= quantity;
+    cart.size = radioValue;
+    cart.price = product.price
+
+    console.log(cart);
   }
 
 
@@ -101,18 +113,19 @@ const Product = (props) => {
                 <CardContent>
                   <label>SKU: 123459678</label>
 
-                  <label className="d-block mt-2">Color: </label>
-                  <label htmlFor=""> <Radio /> <span>A</span></label>
+                  <label className="d-block mt-2">Color: {product.color} </label>
+                  <ToggleButton type="radio" checked={true} value={product.color} className="custom-rad"></ToggleButton>
+              
                  
 
                   <label className="d-block mt-2">Size: {radioValue} </label>
                   <ButtonGroup toggle>
-                    <ToggleButton key={"nbdsjvdsfvc"} type="radio" checked={radioValue === "Siya"} onChange={handleRadioChange} value="Siya" variant={radioValue === "Siya" ? "secondary": "secondary-outline"} className="mr-3 custom-rad ">32 reg</ToggleButton>
+                  {product.size && product.size.map((size,index) =>(
+                    <ToggleButton key={index} type="radio" checked={radioValue === size} onChange={handleRadioChange} value={size} variant={radioValue === size? "secondary": "secondary-outline"} className="mr-3 custom-rad ">{size}</ToggleButton>
 
+                  ))}
 
-                    
-                    <ToggleButton key={"nbdsjvdsfvcd"} checked={radioValue === "Webstar"} onChange={handleRadioChange} value="Webstar" type="radio" variant={radioValue === "Webstar" ? "secondary": "secondary-outline"} className="mr-2 custom-rad">M</ToggleButton>
-                    
+    
                   </ButtonGroup>
            
 
@@ -143,7 +156,7 @@ const Product = (props) => {
                       {" "}
                       In stock. Bag it now!
                     </label>
-                    <button className="btn btn-danger btn-block text-center pt-3 pb-3">
+                    <button onClick={handleClick} className="btn btn-danger btn-block text-center pt-3 pb-3">
                       ADD TO BAG
                     </button>
                   </div>

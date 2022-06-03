@@ -10,12 +10,13 @@ button {
   border: none;
 }
 input {
-  border-top: none !important;
+  /* border-top: none !important;
   border-bottom-left-radius: 20% !important;
   border-left: none !important;
-  border-right: none !important;
-  border-bottom: solid teal !important;
+  border-right: none !important; */
+  border-bottom: solid rgb(219, 173, 173) !important;
   width:auto;
+  margin-bottom: 13px !important;
 }
 #custom-input {
   border: 1px !important;

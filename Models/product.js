@@ -8,7 +8,15 @@ const productSchema = new Schema({
     },
     slug:{
         type:String,
-        reequired:true
+        required:true
+    },
+    sku:{
+        type : String,
+        required:true
+    },
+    color:{
+        type:String,
+        required:true
     },
     price:{
         type: Number,
@@ -23,7 +31,7 @@ const productSchema = new Schema({
         required: true
     },
     size: {
-        type : String,
+        type : Array,
         required: true,
     },
     offer: {

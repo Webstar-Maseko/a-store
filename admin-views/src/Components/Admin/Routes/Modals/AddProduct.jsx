@@ -32,22 +32,32 @@ const AddProduct = (props) => {
   useEffect(setCategory, [dispatch]);
 
   function onSubmit(data) {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("price", data.price);
-    formData.append("quantity", data.quantity);
-    formData.append("description", data.description);
-    formData.append("size", data.size);
-    formData.append("category", data.category);
-    for (let i = 0; i < data.img.length; i++) {
-      formData.append("img", data.img[i]);
-    }
-    dispatch(CreateProduct(formData))
-      .unwrap()
-      .then(() => {
-        <SuccessToast isOpen={true}/>;
-        reset({ data });
-      });
+
+    let size = data.size.split(",");
+    //let quantity=data.quantity.split(",");
+
+      console.log(size);
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("price", data.price);
+      formData.append("quantity", data.quantity);
+      formData.append("description", data.description);
+      formData.append("size", data.size.split(","));
+      formData.append("category", data.category);
+      formData.append("sku", data.sku);
+      formData.append("color", data.color);
+      for (let i = 0; i < data.img.length; i++) {
+        formData.append("img", data.img[i]);
+      }
+      dispatch(CreateProduct(formData))
+        .unwrap()
+        .then(() => {
+          <SuccessToast isOpen={true} />;
+          reset({ data });
+        });
+
+
+   
   }
 
   useEffect(() => {
@@ -95,6 +105,7 @@ const AddProduct = (props) => {
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      scrollable
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
@@ -114,6 +125,12 @@ const AddProduct = (props) => {
           />
           {errors.name && <span className="text-danger">{errors.message}</span>}
           <Form.Control
+            placeholder="Product sku"
+            name="sku"
+            ref={register({ required: true })}
+          />
+          {errors.sku && <span className="text-danger">{errors.message}</span>}
+          <Form.Control
             placeholder="Price"
             name="price"
             ref={register({ required: true })}
@@ -122,14 +139,30 @@ const AddProduct = (props) => {
             <span className="text-danger">{errors.message}</span>
           )}
           <Form.Control
-            placeholder="Quantity"
+            placeholder="Color"
+            name="color"
+            ref={register({ required: true })}
+          />
+          {errors.color && (
+            <span className="text-danger">{errors.message}</span>
+          )}
+
+          <Form.Control
+            name="size"
+            placeholder="Sizes: (eg: S,M,L)"
+            ref={register({ required: true })}
+          />
+          {errors.size && <span className="text-danger">{errors.message}</span>}
+          <Form.Control
+            placeholder="Quantity:(Per Size)"
             name="quantity"
             ref={register({ required: true })}
           />
           {errors.quantity && (
             <span className="text-danger">{errors.message}</span>
           )}
-          <br />
+         
+
           <Form.Control
             as="textarea"
             placeholder="Description"
@@ -141,13 +174,6 @@ const AddProduct = (props) => {
           )}
           <br />
 
-          <Form.Control
-            name="size"
-            placeholder="Size"
-            ref={register({ required: true })}
-          />
-          {errors.size && <span className="text-danger">{errors.message}</span>}
-          <br />
 
           <Form.Control
             as="select"

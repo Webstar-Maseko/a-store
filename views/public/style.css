@@ -83,8 +83,8 @@ input {
 .auth {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  /* align-items: center; */
 }
 .sidenav {
   bottom: 0;
@@ -507,7 +507,8 @@ input::-webkit-inner-spin-button {
   
 }
 .modalSize{
-  width: 80% !important;
+  min-width: 600px !important;
+  max-height: 450px !important;
 }
 .mod{
   font-size: 27px;
@@ -523,6 +524,20 @@ input::-webkit-inner-spin-button {
 .btn-danger{
   background-color: #d71920 !important;
 }
+.text-btn{
+  cursor: pointer;
+
+}
+.MuiFormControl-root{
+  min-width: 100% !important;
+}
+.text-btn2{
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: .4px;
+}
+
 
 
 /* =====================Media queries=============================== */
