@@ -11,6 +11,7 @@ import Register from "./Register";
 const Auth = (props) => {
   let [sign, setSign] = useState(false);
   let [reg, setReg] = useState(false);
+  let [showModal] = useState(false)
 
   return (
     <Modal
@@ -19,12 +20,13 @@ const Auth = (props) => {
       centered
       scrollable={true}
       dialogClassName="modalSize"
+     
     
     >
       {!sign && !reg && (
         <>
           <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
+          <Modal.Body show={true}>
             <div className="auth">
               <h1 className="text-center mod">
                 We're so happy

@@ -1,11 +1,12 @@
 const exp = require("express");
-const { login, register } = require("../Controllers/userController");
+const { login, register,logout } = require("../Controllers/userController");
 const router = exp.Router();
 
 
 
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", logout)
 
 
 module.exports =  router;

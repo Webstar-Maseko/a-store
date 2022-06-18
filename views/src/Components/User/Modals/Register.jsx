@@ -7,25 +7,51 @@ import { IconButton } from "@material-ui/core";
 import { IconContext } from "react-icons";
 import { useForm, Controller } from "react-hook-form";
 import Form from "react-bootstrap/Form";
+import { useDispatch, useSelector } from "react-redux";
+import { RegisterClient } from "../../Redux/store/slicers/UserSlicer";
+import {useState} from "react";
+
+import Error from "../../Error";
 
 const Register = (props) => {
-  let { register, error, handleSubmit, control } = useForm();
+  const defaultValues = { firstName: "",lastName:"",password:"",username:"", phone:"" };
+  let { handleSubmit, control } = useForm({ defaultValues });
+  const dispatch = useDispatch();
+  let [load, isLoading] = useState(false);
+  const { message } = useSelector((state) => state.message);
+
 
   const onSubmit = (data) => {
-    console.log(data);
+   
+    isLoading(() => true);
+    dispatch(RegisterClient(data))
+      .unwrap()
+      .then(() => {
+        isLoading(false);
+        
+        props.setReg(false);
+        props.setSign(false);
+        window.location.reload();
+      
+      })
+      .catch((err) => {
+        isLoading(() => false);
+        
+      });
   };
 
   return (
     <>
       <Modal.Header closeButton className="text-center">
         <IconContext.Provider value={{ size: ".7em" }}>
-          <IconButton className="pb-0">
-            <IoChevronBackOutline
-              onClick={() => {
-                props.setReg(false);
-                props.setSign(false);
-              }}
-            />
+          <IconButton
+            className="pb-0"
+            onClick={() => {
+              props.setReg(false);
+              props.setSign(false);
+            }}
+          >
+            <IoChevronBackOutline />
           </IconButton>
         </IconContext.Provider>
 
@@ -35,72 +61,103 @@ const Register = (props) => {
       <Modal.Body>
         <div className="auth mt-5 mb-1 pl-3 pr-3 text-center">
           <div className=" pl-5 pr-5 ml-5 mr-5">
+          {message && <Error message={message} />}
             <Form onSubmit={handleSubmit(onSubmit)}>
               <Controller
                 name="firstName"
                 control={control}
-                defaultValue=""
-                render={({
-                  field
-                  
-                }) => (
+                render={({ onChange, ref }) => {
+                  return (
+                    <TextField
+                      name="firstName"
+                      id="firstName"
+                      label="First Name"
+                      type="text"
+                      variant="outlined"
+                      block="true"
+                      inputRef={ref}
+                      onChange={onChange}
+                    />
+                  );
+                }}
+              />
+             
+             <br />
+
+              <Controller
+                name="lastName"
+                control={control}
+                render={({ onChange, ref }) => {
+                  return (
+                    <TextField
+                      name="lastName"
+                      id="lastName"
+                      label="Last Name"
+                      type="text"
+                      className="mt-4"
+                      variant="outlined"
+                      block="true"
+                      inputRef={ref}
+                      onChange={onChange}
+                    />
+                  );
+                }}
+              />
+              <br />
+
+              <Controller
+                render={({ onChange, ref }) => (
                   <TextField
-                    id="firstName"
-                    label="First Name"
-                    type="text"
+                    id="email"
+                    label="Email"
+                    type="email"
                     variant="outlined"
-                    block
-                    {...field}
+                    block="true"
+                    className="mt-4"
+                    inputRef={ref}
+                    onChange={onChange}
                   />
                 )}
-
-                rules={{required:"This is required"}}
+                control={control}
+                name="username"
               />
-              <br />
 
-              <TextField
-                id="lastName"
-                label="Last Name"
-                type="text"
-                variant="outlined"
-                block
-                className="mt-4"
-                name="lastName"
-                ref={register({ required: true })}
-              />
               <br />
-
-              <TextField
-                id="email"
-                label="Email"
-                type="email"
-                variant="outlined"
-                block
-                className="mt-4"
-                name="email"
-                ref={register({ required: true })}
-              />
-              <br />
-
-              <TextField
-                id="phoneNumber"
-                label="Phone Number"
-                type="text"
-                variant="outlined"
-                className="mt-3"
+              <Controller
+                render={({ onChange, ref }) => (
+                  <TextField
+                    id="phoneNumber"
+                    label="Phone Number"
+                    type="text"
+                    variant="outlined"
+                    className="mt-3"
+                    name="phone"
+                    inputRef={ref}
+                    onChange={onChange}
+                  />
+                )}
+                control={control}
                 name="phone"
-                ref={register({ required: true })}
               />
+
               <br />
 
-              <TextField
-                id="password"
-                label="Password"
-                type="password"
-                variant="outlined"
-                className="mt-3"
+              <Controller
+                render={({ onChange, ref }) => (
+                  <TextField
+                    id="password"
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    className="mt-3"
+                    name="password"
+                    inputRef={ref}
+                    onChange={onChange}
+                  />
+                )}
+                control={control}
                 name="password"
-                ref={register({ required: true })}
+                rules={{ required: true, min: 8 }}
               />
 
               <Button
@@ -109,15 +166,14 @@ const Register = (props) => {
                 className="pl-5 pr-5 pt-3 pb-3 mt-4 mb-3"
                 type="submit"
               >
-                Register
+               { load ?"Loading...":"Register"}
               </Button>
             </Form>
 
             <span className="text-btn2">
               We’ll be sending you the latest deals and keeping you informed
               along the way with order updates. By creating a profile you are
-              agreeing to the Mr Price Group LTD terms and conditions, and
-              privacy policy.
+              agreeing to the A-Store terms and conditions, and privacy policy.
             </span>
 
             <p

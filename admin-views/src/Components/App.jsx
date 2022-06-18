@@ -23,7 +23,7 @@ function App() {
                 </Col>
                 <Col md={10}>
                   <Switch>
-                    <div className="container-fluid mt-5 pt-5">
+                    <div className="container-fluid mt-3 pt-5">
                       <Route exact path={path + "/"} component={Dashboard} />
                       <Route exact path={path + "/login"} component={Alogin} />
                       <Route

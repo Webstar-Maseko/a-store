@@ -23,8 +23,9 @@ export const Login = createAsyncThunk(
       })
       .catch((err) => {
         thunkAPI.dispatch(setMessage("username or password is not recognized"));
+        return null;
       });
-      localStorage.setItem("user", JSON.stringify(user));
+      user &&localStorage.setItem("user", JSON.stringify(user));
     return user;
   }
 );
@@ -35,13 +36,14 @@ export const Register = createAsyncThunk("AdminUser/register", async(data, thunk
       .then((res) => {
         if (res.data.name === "UserExistsError") {
           thunkAPI.dispatch(setMessage(res.data.message));
+          return null;
         } else {
           thunkAPI.dispatch(clearMessage())
          return res.data;
         }
       })
       .catch((err) => alert(err));
-      localStorage.setItem("user", JSON.stringify(user));
+      user &&localStorage.setItem("user", JSON.stringify(user));
       return user;
 })
 

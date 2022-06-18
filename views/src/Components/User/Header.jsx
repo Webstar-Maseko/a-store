@@ -13,12 +13,14 @@ import SearchHeader from "./SearchHeader";
 import { useEffect,useState } from "react";
 import { IconButton } from "@material-ui/core";
 import Auth from "./Modals/Auth";
-
+import { useSelector, useDispatch } from "react-redux";
 const Header = () => {
   function burgerClick() {
     console.log("clicking");
   }
-  let [modalShow,setModalShow] = useState(false)
+  let [modalShow,setModalShow] = useState(false);
+  let {isLoggedIn} = useSelector((state) => state.client);
+  let dispatch = useDispatch();
 
   return (
     <>
@@ -45,8 +47,8 @@ const Header = () => {
             </IconContext.Provider>
 
             <IconContext.Provider value={{ size: "1.5em" }}>
-              <IconButton onClick={() => setModalShow(true)}>
-                <MdPersonOutline className="" />
+              <IconButton onClick={() => isLoggedIn ?console.log("user is logged in"): setModalShow(true)}>
+                <MdPersonOutline className="" color={isLoggedIn ? "#f50057": "secondary"} />
               </IconButton>
             </IconContext.Provider>
             <Auth show={modalShow} onHide={() => setModalShow(false)} />
