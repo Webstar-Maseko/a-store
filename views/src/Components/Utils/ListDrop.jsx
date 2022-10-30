@@ -22,18 +22,6 @@ const handleOpen = () =>{
   </ListItem>
   <Collapse in={open} unmountOnExit>
   {props.children}
-   {/* "mmh"
-    <br />
-    <br />
-    <br />
-    <b>Fabric Content:</b>
-    <br />
-    Lorem ipsum dolor sit.
-    <br />
-    <br />
-    <b>Wash Care:</b>
-    <br />
-    Lorem, ipsum dolor. */}
   </Collapse>
 </List>);
 

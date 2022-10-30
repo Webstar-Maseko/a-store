@@ -241,7 +241,7 @@ input {
   color: #000;
 }
 .menuHeader > ul > li > ul > li > ul a {
-  display: none;
+  display: block;
   padding: 2px 0 15px;
   font-size: 14px;
   text-decoration: none;
@@ -261,7 +261,7 @@ input {
 }
 
 .menuHeader > ul > li > ul > li a:hover + ul > li a {
-  display: block;
+    display: block;
 }
 .gePar {
   max-width: 600px;
@@ -453,6 +453,7 @@ label, strong,span {
   color: #6e6e77;
 }
 
+
 .itemlabel{
   /* font-size: 12px ; */
   letter-spacing: .4px;
@@ -483,10 +484,13 @@ label, strong,span {
   padding: .375rem .65rem !important;
   
 }
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+#custom-input3::-webkit-outer-spin-button,
+#custom-input3::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+#custom-input3{
+  -moz-appearance: textfield;
 }
 .oAuth{
   display: inline-block !important;
@@ -536,6 +540,17 @@ input::-webkit-inner-spin-button {
   line-height: 16px;
   text-align: center;
   letter-spacing: .4px;
+}
+.nav-item{
+  margin-right: 10px ;
+}
+
+.nav-link{
+  background-color: #ececee !important;
+  color: initial !important ;
+}
+.nav-link.active{
+  background-color: transparent !important;
 }
 
 
