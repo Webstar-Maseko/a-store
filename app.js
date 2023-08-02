@@ -15,7 +15,7 @@ const CategoryRoute = require("./Routes/CategoryRoute");
 const ProductRoute = require("./Routes/ProductRoute");
 const CartRoute = require("./Routes/cartRoute");
 
-const port = process.env.Port || 5000;
+const port = process.env.port || 5000;
 const moncon= process.env.Mongo || "mongodb://localhost:27017/eCommerce";
 
 
