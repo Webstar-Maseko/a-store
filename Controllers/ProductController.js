@@ -32,10 +32,12 @@ exports.createProduct = (req, res) => {
         error ? res.send(error) : res.send(products);
       });
     } else {
-      res.send("unauthorized");
+      res.status(401).send({message:"not authorized for this action"});
     }
   } catch (err) {
+   
     console.log(err);
+    res.status(500).send(err);
   }
 };
 

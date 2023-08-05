@@ -3,5 +3,5 @@ const { addItem } = require("../Controllers/cartController");
 const router = exp.Router();
 
 
-router.post("/addItem", addItem );
+router.post("/cart/addItem", addItem );
 module.exports = router;

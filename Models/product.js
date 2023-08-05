@@ -1,5 +1,55 @@
 const {model, Schema} = require("mongoose");
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      Product:
+ *          properties:
+ *              name: 
+ *                  type: string
+ *                  required: true
+ *              slug:
+ *                  type: string
+ *                  requiried: true
+ *              sku:
+ *                  type: string
+ *                  required: true
+ *              color:
+ *                  type: string
+ *                  required: true
+ *              price:
+ *                  type: number
+ *                  required: true
+ *              quantity: 
+ *                  type: number
+ *                  required: true
+ *              description:
+ *                  type: string
+ *                  required: true
+ *              size:
+ *                  type: array
+ *                  required: true
+ *              offer:
+ *                  type: number
+ *                  required: true
+ *              category:
+ *                  type: object
+ *                  required: true
+ *              images:
+ *                  type: array
+ *                  required: true
+ *                  items:
+ *                      type: object
+ *                      required: true
+ *                      properties:
+ *                          img:
+ *                              type: string
+ *                              
+ * 
+ * 
+ */
+
 const productSchema = new Schema({
     
     name:{
