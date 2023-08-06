@@ -5,37 +5,43 @@ const Product = require("../Models/product");
 
 exports.createProduct = (req, res) => {
   try {
-    if (req.user.role === "admin") {
-      let images = [];
-      if (req.files.length > 0) {
-        images = req.files.map((file) => {
-          return { img: file.filename };
+    if(req.user){
+      if (req.user.role === "admin") {
+        let images = [];
+        if(req.files){
+          if (req.files.length > 0) {
+            images = req.files.map((file) => {
+              return { img: file.filename };
+            });
+          }
+        }
+      
+        const prod = new Product({
+          name: req.body.name,
+          slug: slug(req.body.name + "-" + shortid.generate()),
+          price: req.body.price,
+          quantity: req.body.quantity,
+          description: req.body.description,
+          size: req.body.size.split(","),
+          offer: req.body.offer,
+          images: images,
+          addedBy: req.user._id,
+          category: req.body.category,
+          color: req.body.color,
+          sku: req.body.sku,
         });
+        prod.save((error, products) => {
+          error ? res.send(error) : res.send(products);
+        });
+      } else {
+        res.status(401).send({ message: "not authorized for this action" });
       }
-      console.log(req.body.size.split(","));
-
-      const prod = new Product({
-        name: req.body.name,
-        slug: slug(req.body.name + "-" + shortid.generate()),
-        price: req.body.price,
-        quantity: req.body.quantity,
-        description: req.body.description,
-        size: req.body.size.split(","),
-        offer: req.body.offer,
-        images: images,
-        addedBy: req.user._id,
-        category: req.body.category,
-        color: req.body.color,
-        sku: req.body.sku,
-      });
-      prod.save((error, products) => {
-        error ? res.send(error) : res.send(products);
-      });
-    } else {
-      res.status(401).send({message:"not authorized for this action"});
+    }else{
+      res.status(401).send({message:"You need to be authenticated for this operation"
+      })
     }
-  } catch (err) {
    
+  } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
@@ -43,22 +49,23 @@ exports.createProduct = (req, res) => {
 
 //Fetch all the products from the db
 exports.getProduct = (req, res) => {
-  Product.find({}).exec((error, products) => {
-    error ? res.send(error) : res.send(products);
-  });
+  retrieveAllProducts(res)
 };
 
 //Get one product with it details
 exports.getProductDetails = (req, res) => {
   try {
     const { product } = req.params;
-    console.log(product);
 
     Product.findOne({ slug: product }).exec((error, prod) => {
       if (error) {
         res.status(400).json(error);
       } else {
-        res.send(prod);
+        if (prod != null) {
+          res.send(prod);
+        } else {
+          res.status(404).send({ message: "Specified product doesn't exist" });
+        }
       }
     });
   } catch (error) {
@@ -69,18 +76,24 @@ exports.getProductDetails = (req, res) => {
 
 //Delete one product from the db
 exports.deleteProduct = (req, res) => {
-  Product.deleteOne({ _id: req.body.id }, (err, success) => {
-    if (!err) {
-      Product.find({}).exec((error, products) => {
-        if (error) res.send(error);
-        else {
-          res.send(products);
+  try {
+    if(req.user.role ==="admin"){
+      const { id } = req.params;
+      Product.deleteOne({ _id: id }, (err, success) => {
+        if (!err) {
+          //res.status(204);
+          retrieveAllProducts(res);
+        } else {
+          res.send(err);
         }
       });
-    } else {
-      res.send(err);
+    }else{
+      res.status(403).send({message: "You are not authorized for this action"})
     }
-  });
+   
+  } catch (error) {
+    res.status(400).json(error);
+  }
 };
 
 //Get a list of products associated with a category from the db
@@ -114,7 +127,16 @@ exports.getCategoryProduct = (req, res) => {
                     (err, products) => {
                       if (err) res.status(400).json({ err });
                       else {
-                        res.json(products);
+                        if (products != null) {
+                          res.status(200).json(products);
+                        } else {
+                          res
+                            .status(404)
+                            .send({
+                              message:
+                                "Cannot find any products for this category",
+                            });
+                        }
                       }
                     }
                   );
@@ -126,7 +148,15 @@ exports.getCategoryProduct = (req, res) => {
       }
     });
   } catch (err) {
-  
     res.send(err);
   }
 };
+
+function retrieveAllProducts(res) {
+  Product.find({}).exec((error, products) => {
+    if (error) res.send(error);
+    else {
+      res.send(products);
+    }
+  });
+}

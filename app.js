@@ -37,11 +37,7 @@ app.use("/api", ProductRoute);
 app.use("/api", CartRoute);
 
 swaggerDocs(app);
-mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false, useCreateIndex:true}).then(() => {
-    console.log("connected to database");
-   
-}).catch(err => console.log(err));
-
+mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false, useCreateIndex:true});
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });

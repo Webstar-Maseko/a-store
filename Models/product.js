@@ -28,13 +28,14 @@ const {model, Schema} = require("mongoose");
  *                  type: string
  *                  required: true
  *              size:
- *                  type: array
+ *                  type: String
  *                  required: true
+ *                  default: "M,L,S"
  *              offer:
  *                  type: number
  *                  required: true
  *              category:
- *                  type: object
+ *                  type: string
  *                  required: true
  *              images:
  *                  type: array

@@ -96,7 +96,8 @@ exports.deleteCategory = (req, res) => {
       if(req.user.role === "admin"){
   
         let collection = req.body;
-
+        if(!Array.isArray(collection))
+           return res.status(400).send({message:"invalid body"});
         category.deleteMany(
           { _id: {$in: collection} },
           (err, docs) => {
@@ -105,7 +106,7 @@ exports.deleteCategory = (req, res) => {
                 if (error) res.send(error);
                 else {
                   const catList = createCateList(categories);
-                  res.send(catList);
+                  res.status(200).send(catList);
                 }
               });
             } else {

@@ -63,7 +63,7 @@ router.post("/category/create", upload.array("img"), createCategory);
 /**
  * @swagger
  * /category/deleteCategory:
- *  post:
+ *  delete:
  *    tags:
  *      - Category
  *    summary: used to delete a category or categories
@@ -98,7 +98,7 @@ router.post("/category/create", upload.array("img"), createCategory);
  *
  *
  */
-router.post("/category/deleteCategory", deleteCategory);
+router.delete("/category/deleteCategory", deleteCategory);
 
 /**
  * @swagger

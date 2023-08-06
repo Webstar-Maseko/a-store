@@ -65,7 +65,8 @@ router.get("/product/getProduct", getProduct);
  *            schema:
  *              type: object
  *              example: {"size":["S","M","L"],"_id":"6293a66fe0a82b9264dfbd41","name":"Oakridge Formal","slug":"oakridge-formal-c3mch2igo0","price":149.99,"quantity":10,"description":"adasdcscs svdsv","images":[{"_id":"6293a66fe0a82b9264dfbd42","img":"st9NNyIre"},{"_id":"6293a66fe0a82b9264dfbd43","img":"XVN3gjq7c3"}],"addedBy":"61b49a592f602ec080076c92","category":"62373585e2142630fc9f5812","color":"blue","sku":"12345678","reviews":[],"createdAt":"2022-05-29T16:59:27.147Z","updatedAt":"2022-05-29T16:59:27.147Z","__v":0}
- * 
+ *      '404':
+ *        description: Not found
  *              
  */
 router.get("/product/:product", getProductDetails);
@@ -74,8 +75,8 @@ router.get("/product/:product", getProductDetails);
  * @swagger
  * /product/{root}/{sub}/{category}:
  *  get:
- *    summary: returns a filtered list of product for specifed categoryh
- *    description: requries a parent, and a child finally the grandchild, to return product related to the grandchild
+ *    summary: returns a filtered list of product for specifed category
+ *    description: requries a parent, a child and finally the grandchild, to return products related to the grandchild
  *    tags:
  *      - Product
  *    parameters:
@@ -88,6 +89,7 @@ router.get("/product/:product", getProductDetails);
  *        description: sub category of the parent. e.g Accessories
  *        required: tru
  *      - name: category
+ *        in: path
  *        description: this is the sub sub category. e.g socks
  *        required: true
  *    responses:
@@ -98,6 +100,9 @@ router.get("/product/:product", getProductDetails);
  *                schema:
  *                  type: array
  *                  example: [{}]
+ *      '404':
+ *        description: Not found
+ *        
  *        
  *      
  */
@@ -136,29 +141,28 @@ router.post("/product/create", upload.array("img"), createProduct);
 /**
  * @swagger
  * /product/delete:
- *  post:
+ *  delete:
  *    summary: deletes a product
  *    description: deletes a product
  *    tags:
  *      - Product
- *    requestBody:
- *      required: true
- *      content: 
- *        application/json:
- *          schema:
- *            type: object
- *            example: {'_id':""}
+ *    parameters:
+ *      - name: id
+ *        description: product id
+ *        in: path
+ *        required: true
  *    responses:
- *      '200':
- *        description: Ok
- *        content:
- *          application/json:
- *            schema:
- *              type: object
+ *      '204':
+ *        description: Successfully deleted
+ *      '403':
+ *        description: forbidden
+ *      '500':
+ *        description: internal server error
+ *        
  *              
  *      
  */
-router.post("/product/delete", deleteProduct);
+router.delete("/product/delete/:id", deleteProduct);
 
 
 module.exports = router;

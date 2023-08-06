@@ -34,7 +34,7 @@ exports.login = (req, res) =>{
                 passport.authenticate("local") (req,res, () =>{
                  User.findOne({username: user.username, role:"user"},(err, user)=>{
                     err ? res.send(err):
-                    user !== null ? res.send(user): res.status(401).json({message:"Unauthorized, please register an account"});
+                    user !== null ? res.send(user): res.status(400).json({message:"User not found, please register an account"});
                 })
             });
             }else{
