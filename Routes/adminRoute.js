@@ -1,5 +1,10 @@
 const exp = require("express");
-const { login, register, logout } = require("../Controllers/adminController");
+const {
+  login,
+  register,
+  logout,
+  restricted,
+} = require("../Controllers/adminController");
 const router = exp.Router();
 
 /**
@@ -37,8 +42,8 @@ const router = exp.Router();
  *                          type: object
  *          '400':
  *              description: Bad Request
- * 
- *                  
+ *
+ *
  */
 router.post("/admin/register", register);
 
@@ -69,9 +74,9 @@ router.post("/admin/login", login);
  * @swagger
  * /admin/logout:
  *  post:
- *      summary: logs out the user 
+ *      summary: logs out the user
  *      description: Used to destriy the current user session and de-authenticate the user
- *      tags: 
+ *      tags:
  *          - Admin
  *      responses:
  *          '200':
@@ -83,6 +88,30 @@ router.post("/admin/login", login);
  *                          example: {'message':"you have logged out"}
  */
 
-router.post("/admin/logout",logout)
+router.post("/admin/logout", logout);
 
-module.exports =  router;
+/**
+ * @swagger
+ * /restricted:
+ *  get:
+ *      summary: testing restricted resource (temporarily)
+ *      tags:
+ *         - Admin
+ *      responses:
+ *          '200':
+ *              description: Ok
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          example: {'message':"access to restricted resource confirmed"}
+ *          '403':
+ *              description: forbidden
+ *          '401':
+ *              description: Not authorized
+ *          '500':
+ *              description: internal server error
+ */
+router.get("/restricted", restricted);
+
+module.exports = router;
