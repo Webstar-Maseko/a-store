@@ -140,7 +140,7 @@ router.post("/product/create", upload.array("img"), createProduct);
 
 /**
  * @swagger
- * /product/delete:
+ * /product/delete/{id}:
  *  delete:
  *    summary: deletes a product
  *    description: deletes a product
