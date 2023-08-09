@@ -10,7 +10,7 @@ const swaggerDocs = require("./Utils/Swagger");
 
 const app = exp();
  
-const UserRoute = require("./Routes/user");
+const UserRoute = require("./Routes/userRoute");
 const AdminRoute = require("./Routes/adminRoute");
 const CategoryRoute = require("./Routes/CategoryRoute");
 const ProductRoute = require("./Routes/ProductRoute");

@@ -31,7 +31,7 @@ exports.createProduct = (req, res) => {
           sku: req.body.sku,
         });
         prod.save((error, products) => {
-          error ? res.send(error) : res.send(products);
+          error ? res.status(400).send(error) : res.send(products);
         });
       } else {
         res.status(401).send({ message: "not authorized for this action" });
