@@ -31,7 +31,7 @@ const userSchema = new Schema({
     username: String,
     firstName: String,
     lastName: String,
-    Password: String,
+    password: String,
     phone: String,
     role:{
         type: String,

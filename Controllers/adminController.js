@@ -7,7 +7,9 @@ passport.deserializeUser(User.deserializeUser());
 
 exports.register = (req, res) => {
     try{
-        User.register(
+      if(req.body.username){
+        if(req.body.password){
+          User.register(
             {
               username: req.body.username,
               firstName: req.body.firstName,
@@ -19,13 +21,21 @@ exports.register = (req, res) => {
             (err, user) => {
               if (!err) {
                 passport.authenticate("local")(req, res, () => {
-                  res.send(user);
+                  res.send({role: user.role,firstName:user.firstName,lastName:user.lastName});
                 });
               } else {
                 res.status(400).send(err);
               }
             }
           )
+        }else{
+          res.status(400).json({name:"MissingPasswordError", message:"Password is required"})
+        }
+      }else{
+        res.status(400).json({name:"MissingUsernameError", message:"Missing username"});
+      }
+     
+       
     }catch(error){
         res.status(500).send(error);
     }
@@ -33,22 +43,27 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  let user = new User({
-    username: req.body.username,
-    password: req.body.password,
-  });
-
-  req.login(user, (err) => {
-    if (!err) {
-      passport.authenticate("local")(req, res, () => {
-        User.findOne({ username: user.username }, (err, user) => {
-          err ? res.send(err) : res.send(user);
+  if(req.body.username){
+    let user = new User({
+      username: req.body.username,
+      password: req.body.password,
+    });
+  
+    req.login(user, (err) => {
+      if (!err) {
+        passport.authenticate("local")(req, res, () => {
+          User.findOne({ username: user.username }, (err, user) => {
+            err ? res.send(err) : res.send({role: user.role,firstName:user.firstName,lastName:user.lastName});
+          });
         });
-      });
-    } else {
-      res.send(err);
-    }
-  });
+      } else {
+        res.status(401).send({message:"invalid username or password"});
+      }
+    });
+  }else{
+    res.status(400).send({message:"Username is required"})
+  }
+  
 };
 exports.restricted = (req, res) => {
   try {

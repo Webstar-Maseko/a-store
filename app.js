@@ -18,8 +18,9 @@ const CartRoute = require("./Routes/cartRoute");
 
 
 const port = process.env.port || 5000;
-const moncon= process.env.Mongo || "mongodb://localhost:27017/eCommerce";
+const moncon= process.env.NODE_ENV ==="test"? "mongodb://127.0.0.1:27017/eCommerceTest" : process.env.Mongo || "mongodb://l127.0.0.1:27017/eCommerce";
 
+mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false, useCreateIndex:true});
 
 app.use(exp.urlencoded({extended:true}))
 app.use(session({secret:process.env.secret, resave:false, saveUninitialized:false}));
@@ -37,7 +38,16 @@ app.use("/api", ProductRoute);
 app.use("/api", CartRoute);
 
 swaggerDocs(app);
-mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false, useCreateIndex:true});
+
+const db = mong.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open",() => {
+  console.log("Database Connected successfully");
+});
+
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
+
+
+module.exports = app;
