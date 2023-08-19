@@ -22,6 +22,17 @@ const options= {
                 url: "https://spdx.org/licenses/MIT.html",
               },
         },
+        components:{
+            securitySchemes:{
+                bearerAuth:{
+                    type:"http",
+                    scheme:"bearer",
+                    bearerFormat:"JWT"
+
+                }
+            }
+
+        },
         servers:[
             {
                 url: "/api"

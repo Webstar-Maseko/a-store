@@ -41,5 +41,14 @@ const userSchema = new Schema({
 
 }, {timestamps: true});
  
+userSchema.set("toJSON",{
+    transform:(doc,ret,options) =>{
+        delete ret.hash
+        delete ret.salt
+
+        return ret;
+
+    }
+})
 userSchema.plugin(passportLocalMon);
 module.exports = model("User", userSchema);

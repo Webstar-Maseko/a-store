@@ -1,0 +1,1 @@
+exports.tokenSpan = "1h";

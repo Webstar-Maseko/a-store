@@ -75,6 +75,7 @@ describe("Admin", () =>{
                 .send(body)
                 .end((err,res) =>{
                     res.should.have.status(200);
+                    console.log(res.body);
                     //res.should.have.property("access_token");
                     done();
 

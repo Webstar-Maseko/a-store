@@ -26,6 +26,8 @@ app.use(exp.urlencoded({extended:true}))
 app.use(session({secret:process.env.secret, resave:false, saveUninitialized:false}));
 app.use(passport.initialize());
 app.use(passport.session());
+require("./Authentication/Strategies/JwtStrategy");
+require("./Authentication/Strategies/LocalStrategy");
 app.use(exp.json());
 app.use(cors({
     origin:"*"

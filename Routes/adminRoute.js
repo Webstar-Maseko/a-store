@@ -4,8 +4,11 @@ const {
   register,
   logout,
   restricted,
+  userDetails,
 } = require("../Controllers/adminController");
+const { verifyUser } = require("../Authentication/Authenticate");
 const router = exp.Router();
+const passport = require("passport");
 
 /**
  * @swagger
@@ -68,7 +71,7 @@ router.post("/admin/register", register);
  *          '400':
  *              description: Bad request
  */
-router.post("/admin/login", login);
+router.post("/admin/login",passport.authenticate("local",{session:false}), login);
 
 /**
  * @swagger
@@ -112,6 +115,29 @@ router.post("/admin/logout", logout);
  *          '500':
  *              description: internal server error
  */
-router.get("/restricted", restricted);
+router.get("/restricted",verifyUser, restricted);
+
+/**
+ * @swagger
+ * /admin/userDetails:
+ *  get:
+ *    security:
+ *      - bearerAuth: []
+ *    summary: used to retrieve authenticated user's details
+ *    tags:
+ *      - Admin
+ *    responses:
+ *      '200':
+ *        description: 'OK'
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {'firstName':"Siya"}
+ *      '401':
+ *        description: 'Not Authorized'
+ * 
+ */
+router.get("/admin/userDetails",verifyUser,userDetails);
 
 module.exports = router;
