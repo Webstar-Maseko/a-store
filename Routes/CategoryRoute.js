@@ -9,6 +9,7 @@ const shortid = require("shortid");
 const path = require("path");
 const multer = require("multer");
 const passport = require("passport");
+const { verifyUser } = require("../Authentication/Authenticate");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -58,7 +59,7 @@ const upload = multer({ storage: storage });
  *      '500':
  *          description: internal server error
  */
-router.post("/category/create", upload.array("img"), createCategory);
+router.post("/category/create",verifyUser ,upload.array("img"), createCategory);
 
 /**
  * @swagger
@@ -98,7 +99,7 @@ router.post("/category/create", upload.array("img"), createCategory);
  *
  *
  */
-router.delete("/category/deleteCategory", deleteCategory);
+router.delete("/category/deleteCategory", verifyUser,deleteCategory);
 
 /**
  * @swagger

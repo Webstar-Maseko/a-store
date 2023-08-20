@@ -76,7 +76,7 @@ exports.createCategory = (req, res) => {
       res.status(401).json({ error: "You are not logged in" });
     }
   }catch(error){
-    res.status(500).json(erro);
+    res.status(500).json(error);
   }
  
 };
