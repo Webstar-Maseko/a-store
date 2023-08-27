@@ -94,7 +94,6 @@ exports.getCategory = (req, res) => {
 
 exports.deleteCategory = (req, res) => {
   try {
-    if (req.user !== undefined) {
       if (req.user.role === "admin") {
         let collection = req.body;
         if (!Array.isArray(collection))
@@ -115,11 +114,8 @@ exports.deleteCategory = (req, res) => {
       } else {
         res
           .status(401)
-          .json({ error: "You don't have permission for this action" });
+          .json({ message: "You don't have permission for this action" });
       }
-    } else {
-      res.status(401).json({ error: "You are not logged in" });
-    }
   } catch (error) {
     res.status(500).send(error);
   }

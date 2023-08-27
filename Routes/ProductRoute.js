@@ -10,6 +10,7 @@ const router = exp.Router();
 const shortid = require("shortid");
 const path = require("path");
 const multer = require("multer");
+const { verifyUser } = require("../Authentication/Authenticate");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -136,7 +137,7 @@ router.get("/product/:root/:sub/:category", getCategoryProduct);
  *         description: internal server error
  * 
  */
-router.post("/product/create", upload.array("img"), createProduct);
+router.post("/product/create",verifyUser, upload.array("img"), createProduct);
 
 /**
  * @swagger
@@ -162,7 +163,7 @@ router.post("/product/create", upload.array("img"), createProduct);
  *              
  *      
  */
-router.delete("/product/delete/:id", deleteProduct);
+router.delete("/product/delete/:id",verifyUser, deleteProduct);
 
 
 module.exports = router;

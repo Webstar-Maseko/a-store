@@ -10,4 +10,18 @@ exports.getToken = user =>{
     })
 }
 
-exports.verifyUser = passport.authenticate("jwt",{session:false});
+const authenticate = (req,res,next) =>{
+    passport.authenticate("jwt",{session:false}, (err,user,info) =>{
+        if(err)
+            return next(err);
+        if(!user)
+        {
+            res.status(401).send({message:"You are not authenticated for this request"});
+        }else{
+            req.user = user;
+            next();
+        }
+        
+    })(req,res,next)
+}
+exports.verifyUser = authenticate;

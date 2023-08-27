@@ -2,10 +2,11 @@ const slug = require("slug");
 const shortid = require("shortid");
 const Category = require("../Models/category");
 const Product = require("../Models/product");
+const Product_variant = require("../Models/product_variant");
+const mongoose = require("mongoose");
 
-exports.createProduct = (req, res) => {
+exports.createProduct = async (req, res) => {
   try {
-    if(req.user){
       if (req.user.role === "admin") {
         let images = [];
         if(req.files){
@@ -15,34 +16,59 @@ exports.createProduct = (req, res) => {
             });
           }
         }
+        if(req.body.product_variants){
+
+          const variants = req.body.product_variants;
       
-        const prod = new Product({
-          name: req.body.name,
-          slug: slug(req.body.name + "-" + shortid.generate()),
-          price: req.body.price,
-          quantity: req.body.quantity,
-          description: req.body.description,
-          size: req.body.size.split(","),
-          offer: req.body.offer,
-          images: images,
-          addedBy: req.user._id,
-          category: req.body.category,
-          color: req.body.color,
-          sku: req.body.sku,
-        });
-        prod.save((error, products) => {
-          error ? res.status(400).send(error) : res.send(products);
-        });
+          const prod = new Product({
+            name: req.body.name,
+            slug: slug(req.body.name + "-" + shortid.generate()),
+            price: req.body.price,
+            description: req.body.description,
+            offer: req.body.offer,
+            images: images,
+            addedBy: req.user._id,
+            category: req.body.category,
+            color: req.body.color,
+            sku: req.body.sku,
+          });
+  
+          for(const variant of variants ){
+            variant.product_id =  prod._id;
+            await Product_variant.create(variant);
+          }
+      
+          const totalQuantity = await Product_variant.aggregate([
+            {$match:{product_id:mongoose.Types.ObjectId(prod._id)}},
+            {$group:{_id:null,total:{$sum:'$quantity'}}}
+          ]).exec();
+  
+         
+          prod.total_quantity = totalQuantity[0]?.total||0;
+        
+          prod.save((error, products) => {
+            if(error)
+            {
+            
+              res.status(400).send(error)
+            }
+             
+            else{
+              res.send(products);
+            }
+            
+          });
+
+        }else{
+          res.status(400).send({message:"product_variants is missing"})
+        }
+   
       } else {
         res.status(401).send({ message: "not authorized for this action" });
       }
-    }else{
-      res.status(401).send({message:"You need to be authenticated for this operation"
-      })
-    }
    
   } catch (err) {
-    console.log(err);
+    console.log(err)
     res.status(500).send(err);
   }
 };
@@ -69,7 +95,6 @@ exports.getProductDetails = (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 };
@@ -81,10 +106,15 @@ exports.deleteProduct = (req, res) => {
       const { id } = req.params;
       Product.deleteOne({ _id: id }, (err, success) => {
         if (!err) {
-          //res.status(204);
-          retrieveAllProducts(res);
+          Product_variant.deleteMany({product_id:id},(error, success) =>{
+            if(!error)
+              retrieveAllProducts(res);
+            else  
+              res.status(400).send(error);
+          })
+          
         } else {
-          res.send(err);
+          res.status(400).send(err);
         }
       });
     }else{
@@ -152,11 +182,47 @@ exports.getCategoryProduct = (req, res) => {
   }
 };
 
-function retrieveAllProducts(res) {
-  Product.find({}).exec((error, products) => {
-    if (error) res.send(error);
-    else {
-      res.send(products);
+
+exports.updateProduct = (req,res) =>{
+  try{
+    if(req.user.role === "admin"){
+
+      //find the product and update it
+      const id  = req.params.id;
+      const product  = Product.findOneAndUpdate({_id: id}, {
+          description:req.body.description,
+          price: req.body.price,
+          color:req.body.color
+      })
+
+      for(let variant of req.body.product_variants){
+        
+      }
+     
+    }else{
+      res.status(403).send({message: "You are not authorized for this action"})
     }
-  });
+  }catch(error)
+  {
+    res.status.send({message: "There has been an issue with the update request"})
+  }
+  
+}
+
+async function retrieveAllProducts(res) {
+  try{
+
+    const products = await Product.find({}).lean().exec();
+
+    for(const product of products){
+      const variant = await await Product_variant.find({product_id:product._id}).lean().exec();
+      product.variants = variant;
+    }
+    res.status(200).send(products);
+
+  }catch(error){
+    res.status(500).send(error);
+  }
+ 
+
 }

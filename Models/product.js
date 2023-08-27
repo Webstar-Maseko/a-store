@@ -1,4 +1,5 @@
-const {model, Schema} = require("mongoose");
+const {model, Schema,ObjectId} = require("mongoose");
+const mongoose = require("mongoose");
 
 /**
  * @swagger
@@ -21,16 +22,12 @@ const {model, Schema} = require("mongoose");
  *              price:
  *                  type: number
  *                  required: true
- *              quantity: 
+ *              total_quantity: 
  *                  type: number
  *                  required: true
  *              description:
  *                  type: string
  *                  required: true
- *              size:
- *                  type: String
- *                  required: true
- *                  default: "M,L,S"
  *              offer:
  *                  type: number
  *                  required: true
@@ -73,17 +70,13 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    quantity:{
+    total_quantity:{
         type: Number,
-        required: true
+        required:true
     },
     description: {
         type: String,
         required: true
-    },
-    size: {
-        type : Array,
-        required: true,
     },
     offer: {
         type: Number,
@@ -104,5 +97,24 @@ const productSchema = new Schema({
      
 
 }, {timestamps:true})
+
+productSchema.post('save', async () =>{
+    const totalQuantity = await model("Product_variant").aggregate([
+        {$match:{product_id:mongoose.Types.ObjectId(this._id)}},
+        {$group:{_id:null, total:{$sum:'$quantity'}}}
+    ]).exec();
+
+    this.total_quantity = totalQuantity[0]?.total || 0;
+});
+
+productSchema.pre('save', async () =>{
+    const totalQuantity = await model("Product_variant").aggregate([
+        {$match:{product_id:mongoose.Types.ObjectId(this._id)}},
+        {$group:{_id:null, total:{$sum:'$quantity'}}}
+    ]).exec();
+
+    this.total_quantity = totalQuantity[0]?.total || 0;
+});
+
 
 module.exports = model("Product", productSchema);
