@@ -22,7 +22,7 @@ const product_variantSchema = new Schema({
         type:Schema.Types.ObjectId, 
         ref:"Product",
          required:true},
-    size:{type:String, lowercase:true, maxLength:[6,"That is an incorrect size, please confirm"],
+    size:{type:String, lowercase:true, maxLength:[6,"That is an incorrect size, please confirm"]},
     quantity:Number
 })
 
