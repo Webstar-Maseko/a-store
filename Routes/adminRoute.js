@@ -73,25 +73,6 @@ router.post("/admin/register", register);
  */
 router.post("/admin/login",passport.authenticate("local",{session:false}), login);
 
-/**
- * @swagger
- * /admin/logout:
- *  post:
- *      summary: logs out the user
- *      description: Used to destriy the current user session and de-authenticate the user
- *      tags:
- *          - Admin
- *      responses:
- *          '200':
- *              description: OK
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          example: {'message':"you have logged out"}
- */
-
-router.post("/admin/logout", logout);
 
 /**
  * @swagger

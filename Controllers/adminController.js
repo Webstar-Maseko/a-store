@@ -13,6 +13,7 @@ exports.register = (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             phone: req.body.phone,
+            email: req.body.email,
             role: "admin",
           },
           req.body.password,
@@ -21,7 +22,13 @@ exports.register = (req, res) => {
               const access_token = getToken({ _id: user._id });
               res.status(200).send({ success: true, access_token, expiresIn:tokenSpan });
             } else {
-              res.status(400).send(err);
+              if(err.name === "ValidationError"){
+                const validationErrors = Object.values(err.errors).map((err) => err.message);
+                res.status(400).json({ errors: validationErrors });
+              }else{
+                res.status(400).send(err);
+              }
+              
             }
           }
         );
@@ -39,7 +46,13 @@ exports.register = (req, res) => {
         .json({ name: "MissingUsernameError", message: "Missing username" });
     }
   } catch (error) {
-    res.status(500).send(error);
+    if(error.name === "ValidationError"){
+      const validationErrors = Object.values(error.errors).map((err) => err.message);
+      res.status(400).json({ errors: validationErrors });
+    }else{
+      res.status(500).send(error);
+    }
+    
   }
 };
 
@@ -91,7 +104,4 @@ exports.userDetails = (req,res) =>{
   }
 }
 
-exports.logout = (req, res) => {
-  req.logout();
-  res.json({ message: "You have logged out" });
-};
+

@@ -4,78 +4,81 @@ const Category = require("../Models/category");
 const Product = require("../Models/product");
 const Product_variant = require("../Models/product_variant");
 const mongoose = require("mongoose");
+const product_variant = require("../Models/product_variant");
 
 exports.createProduct = async (req, res) => {
   try {
-      if (req.user.role === "admin") {
-        let images = [];
-        if(req.files){
-          if (req.files.length > 0) {
-            images = req.files.map((file) => {
-              return { img: file.filename };
+    if (req.user.role === "admin") {
+      let images = [];
+      if (req.files) {
+        if (req.files.length > 0) {
+          images = req.files.map((file) => {
+            return { img: file.filename };
+          });
+        }
+      }
+      if (req.body.product_variants) {
+        const variants = req.body.product_variants;
+
+        const prod = new Product({
+          name: req.body.name,
+          slug: slug(req.body.name + "-" + shortid.generate()),
+          price: req.body.price,
+          description: req.body.description,
+          offer: req.body.offer,
+          images: images,
+          addedBy: req.user._id,
+          category: req.body.category,
+          color: req.body.color,
+          sku: req.body.sku,
+        });
+
+        for (const variant of variants) {
+          variant.product_id = prod._id;
+          await Product_variant.create(variant);
+        }
+
+        const totalQuantity = await Product_variant.aggregate([
+          { $match: { product_id: mongoose.Types.ObjectId(prod._id) } },
+          { $group: { _id: null, total: { $sum: "$quantity" } } },
+        ]).exec();
+
+        const ProductTotalQuantity = totalQuantity[0]?.total || 0;
+        Product.findOne({ name: prod.name }).exec((error, foundProd) => {
+          if (error)
+            res
+              .status(500)
+              .send({ message: "There has been an error with this request" });
+          else if (foundProd == null) {
+            prod.save((error, products) => {
+              if (error) {
+                res.status(400).send(error);
+              } else {
+                res.send(products);
+              }
+            });
+          } else {
+            res.status(400).send({
+              message:
+                "Product already exists, are you sure you don't want to update?",
             });
           }
-        }
-        if(req.body.product_variants){
-
-          const variants = req.body.product_variants;
-      
-          const prod = new Product({
-            name: req.body.name,
-            slug: slug(req.body.name + "-" + shortid.generate()),
-            price: req.body.price,
-            description: req.body.description,
-            offer: req.body.offer,
-            images: images,
-            addedBy: req.user._id,
-            category: req.body.category,
-            color: req.body.color,
-            sku: req.body.sku,
-          });
-  
-          for(const variant of variants ){
-            variant.product_id =  prod._id;
-            await Product_variant.create(variant);
-          }
-      
-          const totalQuantity = await Product_variant.aggregate([
-            {$match:{product_id:mongoose.Types.ObjectId(prod._id)}},
-            {$group:{_id:null,total:{$sum:'$quantity'}}}
-          ]).exec();
-  
-         
-          prod.total_quantity = totalQuantity[0]?.total||0;
-        
-          prod.save((error, products) => {
-            if(error)
-            {
-            
-              res.status(400).send(error)
-            }
-             
-            else{
-              res.send(products);
-            }
-            
-          });
-
-        }else{
-          res.status(400).send({message:"product_variants is missing"})
-        }
-   
+        });
       } else {
-        res.status(401).send({ message: "not authorized for this action" });
+        res.status(400).send({ message: "product_variants is missing" });
       }
-   
+    } else {
+      res.status(401).send({ message: "not authorized for this action" });
+    }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).send(err);
   }
 };
 
 //Fetch all the products from the db
 exports.getProduct = (req, res) => {
-  retrieveAllProducts(res)
+  retrieveAllProducts(res);
 };
 
 //Get one product with it details
@@ -102,25 +105,23 @@ exports.getProductDetails = (req, res) => {
 //Delete one product from the db
 exports.deleteProduct = (req, res) => {
   try {
-    if(req.user.role ==="admin"){
+    if (req.user.role === "admin") {
       const { id } = req.params;
       Product.deleteOne({ _id: id }, (err, success) => {
         if (!err) {
-          Product_variant.deleteMany({product_id:id},(error, success) =>{
-            if(!error)
-              retrieveAllProducts(res);
-            else  
-              res.status(400).send(error);
-          })
-          
+          Product_variant.deleteMany({ product_id: id }, (error, success) => {
+            if (!error) retrieveAllProducts(res);
+            else res.status(400).send(error);
+          });
         } else {
           res.status(400).send(err);
         }
       });
-    }else{
-      res.status(403).send({message: "You are not authorized for this action"})
+    } else {
+      res
+        .status(403)
+        .send({ message: "You are not authorized for this action" });
     }
-   
   } catch (error) {
     res.status(400).json(error);
   }
@@ -160,12 +161,10 @@ exports.getCategoryProduct = (req, res) => {
                         if (products != null) {
                           res.status(200).json(products);
                         } else {
-                          res
-                            .status(404)
-                            .send({
-                              message:
-                                "Cannot find any products for this category",
-                            });
+                          res.status(404).send({
+                            message:
+                              "Cannot find any products for this category",
+                          });
                         }
                       }
                     }
@@ -182,47 +181,81 @@ exports.getCategoryProduct = (req, res) => {
   }
 };
 
-
-exports.updateProduct = (req,res) =>{
-  try{
-    if(req.user.role === "admin"){
-
+exports.updateProduct = async (req, res) => {
+  try {
+    if (req.user.role === "admin") {
       //find the product and update it
-      const id  = req.params.id;
-      const product  = Product.findOneAndUpdate({_id: id}, {
-          description:req.body.description,
+      const id = req.params.id;
+      await Product.findOneAndUpdate(
+        { _id: id },
+        {
+          description: req.body.description,
           price: req.body.price,
-          color:req.body.color
-      })
-
-      for(let variant of req.body.product_variants){
-        
+          color: req.body.color,
+        }
+      );
+      // const prodVariants = await Product_variant.find({});
+      for (let variant of req.body.product_variants) {
+        //Find the variant with the matching_ID
+        const productV = await Product_variant.find({
+          $and: [{ size: variant.size }, { product_id: id }],
+        })
+          .lean()
+          .exec();
+        console.log(productV);
+        if (productV.length > 0) {
+          await product_variant.findOneAndUpdate(
+            { $and: [{ size: variant.size }, { product_id: id }] },
+            {
+              quantity: variant.quantity,
+            }
+          );
+        } else {
+          const v = new Product_variant({
+            size: variant.size,
+            quantity: variant.quantity,
+            product_id: id,
+          });
+          console.log(variant);
+          await v.save();
+        }
       }
-     
-    }else{
-      res.status(403).send({message: "You are not authorized for this action"})
+      res.status(201).send();
+    } else {
+      res
+        .status(403)
+        .send({ message: "You are not authorized for this action" });
     }
-  }catch(error)
-  {
-    res.status.send({message: "There has been an issue with the update request"})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "There has been an issue with the update request",
+    });
   }
-  
-}
+};
 
 async function retrieveAllProducts(res) {
-  try{
-
+  try {
     const products = await Product.find({}).lean().exec();
 
-    for(const product of products){
-      const variant = await await Product_variant.find({product_id:product._id}).lean().exec();
+    for (const product of products) {
+      const variant = await await Product_variant.find({
+        product_id: product._id,
+      })
+        .lean()
+        .exec();
+
+      const totalQuantity = await Product_variant.aggregate([
+        { $match: { product_id: mongoose.Types.ObjectId(product._id) } },
+        { $group: { _id: null, total: { $sum: "$quantity" } } },
+      ]).exec();
+
+      product.total_quantity = totalQuantity[0]?.total || 0;
       product.variants = variant;
     }
-    res.status(200).send(products);
 
-  }catch(error){
+    res.status(200).send(products);
+  } catch (error) {
     res.status(500).send(error);
   }
- 
-
 }

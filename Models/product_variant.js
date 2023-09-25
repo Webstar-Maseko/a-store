@@ -22,8 +22,10 @@ const product_variantSchema = new Schema({
         type:Schema.Types.ObjectId, 
         ref:"Product",
          required:true},
-    size:String,
+    size:{type:String, lowercase:true, maxLength:[6,"That is an incorrect size, please confirm"],
     quantity:Number
 })
+
+
 
 module.exports = model("Product_variant",product_variantSchema);

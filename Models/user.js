@@ -24,6 +24,9 @@ const passportLocalMon= require("passport-local-mongoose");
  *                  default: 'user'
  *              phone: 
  *                  type: string
+ *              email:
+ *                  type: string
+ *                  required: true
  *                  
  */
 
@@ -31,13 +34,24 @@ const userSchema = new Schema({
     username: String,
     firstName: String,
     lastName: String,
-    password: String,
+    password: {
+        type:String,
+        match: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/,
+        //required: [true, "Password is invalid, please ensure it contains at least 8 characters, a digit,a special character,and one uppercase letter"]
+    }
+        ,
     phone: String,
     role:{
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
-    } 
+    },
+    email:{
+        type: String,
+        required: true,
+        unique: true,
+        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    }
 
 }, {timestamps: true});
  

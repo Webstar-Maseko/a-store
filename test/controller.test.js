@@ -19,7 +19,10 @@ describe("Unit Tests", () => {
 
   let access_token;
 
+ 
+
   describe("Controllers", () => {
+    let category = [];
     //Admin controller test
     describe("Admin", () => {
       /**
@@ -27,10 +30,11 @@ describe("Unit Tests", () => {
        */
       let body = {
         username: "siya124@email.com",
-        password: "password1234",
+        password: "Password4!",
         firstName: "Webstar",
         lastName: "Maseko",
         phone: "+27748592573",
+        email:"siya@mail.cop"
       };
 
       describe("/admin/register", () => {
@@ -76,6 +80,7 @@ describe("Unit Tests", () => {
             .post("/api/admin/register")
             .send(body)
             .end((err, res) => {
+              console.log(res.body)
               res.should.have.status(200);
               res.body.should.have.property("access_token");
               done();
@@ -175,7 +180,6 @@ describe("Unit Tests", () => {
         });
       });
 
-      let category;
       describe("/category/index", () => {
         it("Should retrieve all categories", (done) => {
           chai
@@ -212,7 +216,139 @@ describe("Unit Tests", () => {
                     done();
                 })
         })
+
+
+        it("Should create a new category duplicate", (done) => {
+          chai
+            .request(server)
+            .post("/api/category/create")
+            .set("Authorization", "Bearer " + access_token)
+            .send({ gory: "Men" })
+            .end((err, res) => {
+              res.should.have.status(200);
+              done();
+            });
+        });
+
+        it("Should retrieve all categories duplicate ", (done) => {
+          chai
+            .request(server)
+            .get("/api/category/index")
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.have.lengthOf(1);
+              category = res.body;
+              done();
+            });
+        });
+        
       })
     });
+
+    //Product controller test
+    describe("Product", () =>{
+      let product;
+      
+      let prodBody = {
+        name: "shirt blues",
+        price: 150,
+        description: "some new shirt",
+     
+        color: "blue",
+        sku: "12345",
+        product_variants: [
+            {
+                size: "large",
+                quantity: 10
+            },
+            {
+                size: "Medium",
+                quantity: 5
+            }
+        ]
+
+    }
+      describe("/product/create", () =>{
+        
+        it("should fail to create a new product for not logged in user", (done) =>{
+          chai.request(server)
+            .post("/api/product/create")
+            .send(prodBody)
+            .end((err,res) => {
+              res.should.have.status(401);
+              done();
+            })
+        })
+
+        it("should successfully add a new product", (done) =>{
+          prodBody.category = category[0]?._id;
+          chai.request(server)
+          .post("/api/product/create")
+          .set("Authorization", "Bearer "+access_token)
+          .send(prodBody)
+          .end((err,res) => {
+            product = res.body;
+            res.should.have.status(200);
+            done();
+          })
+        })
+      })
+
+      
+      let prodUpdate = {
+        price: 150,
+        description: "some new shirt",
+        color: "blue",
+        product_variants:[{
+    
+            size: "small",
+            quantity: 3
+        },{
+         size: "large",
+            quantity: 3
+        },
+        {
+         size: "medium",
+            quantity: 13
+        }
+        ]
+    
+    
+    }
+      describe("/product/getProduct", () =>{
+
+        it("should return all products available", (done) =>{
+          chai.request(server)
+            .get("/api/product/getProduct")
+            .end((err,res) =>{
+              res.should.have.status(200);
+              product = res.body[0];
+              done()
+            })
+        })
+      })
+
+      describe("/product/update" , () =>{
+        it("should forbid a user from updating when they are not authenticated", (done) =>{
+          chai.request(server).put("/api/product/update/"+product._id)
+          .send(prodUpdate)
+          .end((err,res) =>{
+            res.should.have.status(401);
+            done();
+          })
+        })
+
+        it("should successfully update the product", (done) =>{
+          chai.request(server).put("/api/product/update/"+product._id)
+          .send(prodUpdate)
+          .set("Authorization", "Bearer "+access_token)
+          .end((err,res) =>{
+            res.should.have.status(201);
+            done();
+          })
+        })
+      })
+
+    })
   });
 });

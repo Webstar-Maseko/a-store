@@ -70,10 +70,6 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    total_quantity:{
-        type: Number,
-        required:true
-    },
     description: {
         type: String,
         required: true
@@ -98,23 +94,6 @@ const productSchema = new Schema({
 
 }, {timestamps:true})
 
-productSchema.post('save', async () =>{
-    const totalQuantity = await model("Product_variant").aggregate([
-        {$match:{product_id:mongoose.Types.ObjectId(this._id)}},
-        {$group:{_id:null, total:{$sum:'$quantity'}}}
-    ]).exec();
-
-    this.total_quantity = totalQuantity[0]?.total || 0;
-});
-
-productSchema.pre('save', async () =>{
-    const totalQuantity = await model("Product_variant").aggregate([
-        {$match:{product_id:mongoose.Types.ObjectId(this._id)}},
-        {$group:{_id:null, total:{$sum:'$quantity'}}}
-    ]).exec();
-
-    this.total_quantity = totalQuantity[0]?.total || 0;
-});
 
 
 module.exports = model("Product", productSchema);

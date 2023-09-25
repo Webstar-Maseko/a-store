@@ -4,7 +4,8 @@ const {
   createProduct,
   deleteProduct,
   getCategoryProduct,
-  getProductDetails
+  getProductDetails,
+  updateProduct
 } = require("../Controllers/ProductController");
 const router = exp.Router();
 const shortid = require("shortid");
@@ -165,5 +166,34 @@ router.post("/product/create",verifyUser, upload.array("img"), createProduct);
  */
 router.delete("/product/delete/:id",verifyUser, deleteProduct);
 
+/**
+ * @swagger
+ * /product/update/{id}:
+ *  put:
+ *    summary: updates the current products with specified updates
+ *    description: Used to update the product information
+ *    tags:
+ *      - Product
+ *    paramaters:
+ *      - name: id
+ *        description: product id that needs to be updated
+ *        in: path
+ *        required: true
+ *    requestBody:
+ *      required: true
+ *      content: 
+ *        application/json:
+ *            schema: 
+ *              type: object
+ *              example : {"price": 150,"description": "some new shirt","color": "blue","product_variants":[{size": "small","quantity": 3},{"size": "large","quantity": 3},{"size": "medium","quantity": 13}]}
+ *    responses:
+ *        '201':
+ *          description: successfully updated
+ *        '401':
+ *          description: "not authorized"
+ *        
+ * 
+ */
 
+router.put("/product/update/:id",verifyUser,updateProduct);
 module.exports = router;
