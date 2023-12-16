@@ -37,7 +37,7 @@ const upload = multer({ storage: storage });
  *          schema:
  *            $ref: '#/components/schemas/Category'
  *          example:
- *            gory: Men
+ *            name: Men
  *            parentId: null
  *
  *    responses:

@@ -29,12 +29,12 @@ describe("Unit Tests", () => {
        * Test the Admin route
        */
       let body = {
-        username: "siya124@email.com",
+        username: "tinotenda",
         password: "Password4!",
         firstName: "Webstar",
         lastName: "Maseko",
         phone: "+27748592573",
-        email:"siya@mail.cop"
+        email:"lu@hu.com"
       };
 
       describe("/admin/register", () => {
@@ -160,7 +160,7 @@ describe("Unit Tests", () => {
           chai
             .request(server)
             .post("/api/category/create")
-            .send({ gory: "Men" })
+            .send({ name: "Men" })
             .end((err, res) => {
               res.should.have.status(401);
               done();
@@ -172,7 +172,7 @@ describe("Unit Tests", () => {
             .request(server)
             .post("/api/category/create")
             .set("Authorization", "Bearer " + access_token)
-            .send({ gory: "Men" })
+            .send({ name: "Men" })
             .end((err, res) => {
               res.should.have.status(200);
               done();
@@ -223,7 +223,7 @@ describe("Unit Tests", () => {
             .request(server)
             .post("/api/category/create")
             .set("Authorization", "Bearer " + access_token)
-            .send({ gory: "Men" })
+            .send({ name: "Men" })
             .end((err, res) => {
               res.should.have.status(200);
               done();

@@ -44,8 +44,8 @@ exports.createCategory = (req, res) => {
         }
   
         const cateG = {
-          name: req.body.gory,
-          slug: slug(req.body.gory),
+          name: req.body.name,
+          slug: slug(req.body.name),
           image: images,
         };
   

@@ -9,6 +9,7 @@ const { model, Schema } = require("mongoose");
  *        name:
  *          type: string
  *          required: true
+ *          description: name of the category
  *        parentId:
  *          type: string
  *          required: false

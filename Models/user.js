@@ -31,7 +31,11 @@ const passportLocalMon= require("passport-local-mongoose");
  */
 
 const userSchema = new Schema({
-    username: String,
+    username:{
+        type: String,
+        unique: true,
+        required: true
+    },
     firstName: String,
     lastName: String,
     password: {

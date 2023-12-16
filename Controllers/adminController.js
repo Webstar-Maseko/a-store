@@ -25,7 +25,10 @@ exports.register = (req, res) => {
               if(err.name === "ValidationError"){
                 const validationErrors = Object.values(err.errors).map((err) => err.message);
                 res.status(400).json({ errors: validationErrors });
-              }else{
+              }else if(err.code === 11000){
+                res.status(400).send({message: "User with the specified email has alreadby been registered, please log in."})
+              }
+              else{
                 res.status(400).send(err);
               }
               
