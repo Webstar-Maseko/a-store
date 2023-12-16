@@ -5,49 +5,62 @@ const passport = require("passport");
 
 exports.register = (req, res) => {
   try {
-    if (req.body.username) {
-      if (req.body.password) {
-        User.register(
-          {
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            phone: req.body.phone,
-            email: req.body.email,
-            role: "admin",
-          },
-          req.body.password,
-          (err, user) => {
-            if (!err) {
-              const access_token = getToken({ _id: user._id });
-              res.status(200).send({ success: true, access_token, expiresIn:tokenSpan });
+
+    if(req.body.email){
+      User.findOne({email:req.body.email}).then((user) =>{
+          if(user != null)
+            res.status(400).json({name:"UserExistsError",message: "User with the specified email has already beeen registered. Please log in."})
+          else{
+            if (req.body.username) {
+              if (req.body.password) {
+                User.register(
+                  {
+                    username: req.body.username,
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    phone: req.body.phone,
+                    email: req.body.email,
+                    role: "admin",
+                  },
+                  req.body.password,
+                  (err, user) => {
+                    if (!err) {
+                      const access_token = getToken({ _id: user._id });
+                      res.status(200).send({ success: true, access_token, expiresIn:tokenSpan });
+                    } else {
+                      if(err.name === "ValidationError"){
+                        const validationErrors = Object.values(err.errors).map((err) => err.message);
+                        res.status(400).json({ errors: validationErrors });
+                      }else if(err.code === 11000){
+                        res.status(400).json({message: "User with the specified email has already been registered, please log in."})
+                      }
+                      else{
+                        res.status(400).send(err);
+                      }
+                      
+                    }
+                  }
+                );
+              } else {
+                res
+                  .status(400)
+                  .json({
+                    name: "MissingPasswordError",
+                    message: "Password is required",
+                  });
+              }
             } else {
-              if(err.name === "ValidationError"){
-                const validationErrors = Object.values(err.errors).map((err) => err.message);
-                res.status(400).json({ errors: validationErrors });
-              }else if(err.code === 11000){
-                res.status(400).send({message: "User with the specified email has alreadby been registered, please log in."})
-              }
-              else{
-                res.status(400).send(err);
-              }
-              
+              res
+                .status(400)
+                .json({ name: "MissingUsernameError", message: "Missing username" });
             }
           }
-        );
-      } else {
-        res
-          .status(400)
-          .json({
-            name: "MissingPasswordError",
-            message: "Password is required",
-          });
-      }
-    } else {
-      res
-        .status(400)
-        .json({ name: "MissingUsernameError", message: "Missing username" });
+        }
+      ).catch(error =>{
+        res.status(400).send({error});
+      })
     }
+
   } catch (error) {
     if(error.name === "ValidationError"){
       const validationErrors = Object.values(error.errors).map((err) => err.message);

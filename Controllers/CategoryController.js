@@ -30,8 +30,7 @@ createCateList = (categories, parent_id = null) => {
 
 //create a category
 exports.createCategory = (req, res) => {
-  try{
-
+  try {
     if (req.user != undefined) {
       if (req.user.role === "admin") {
         let images = [];
@@ -42,31 +41,31 @@ exports.createCategory = (req, res) => {
             });
           }
         }
-  
+
         const cateG = {
           name: req.body.name,
           slug: slug(req.body.name),
           image: images,
         };
-  
+
         if (req.body.parentId != "") {
           cateG.parentId = req.body.parentId;
         }
-  
+
         const cat = new category(cateG);
-  
-        cat.save((err, categ) => {
-          if (err) res.send(err);
-          else {
-            category.find({}).exec((error, categories) => {
-              if (error) res.send(error);
-              else {
+        cat
+          .save()
+          .then((categ) => {
+            console.log("blocks here");
+            category
+              .find({})
+              .then((categories) => {
                 const catList = createCateList(categories);
                 res.send(catList);
-              }
-            });
-          }
-        });
+              })
+              .catch((error) => res.status(400).send(error));
+          })
+          .catch((err) => res.status(400).json(err));
       } else {
         res
           .status(403)
@@ -75,47 +74,44 @@ exports.createCategory = (req, res) => {
     } else {
       res.status(401).json({ error: "You are not logged in" });
     }
-  }catch(error){
+  } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
- 
 };
 
 exports.getCategory = (req, res) => {
-  category.find({}).exec((error, categories) => {
-    if (error) res.send(error);
-    else {
+  category
+    .find({})
+    .then((categories) => {
       const catList = createCateList(categories);
-
       res.send(catList);
-    }
-  });
+    })
+    .catch((error) => res.send(error));
 };
 
 exports.deleteCategory = (req, res) => {
   try {
-      if (req.user.role === "admin") {
-        let collection = req.body;
-        if (!Array.isArray(collection))
-          return res.status(400).send({ message: "invalid body" });
-        category.deleteMany({ _id: { $in: collection } }, (err, docs) => {
-          if (!err) {
-            category.find({}).exec((error, categories) => {
-              if (error) res.send(error);
-              else {
-                const catList = createCateList(categories);
-                res.status(200).send(catList);
-              }
-            });
-          } else {
-            res.send(err);
-          }
-        });
-      } else {
-        res
-          .status(401)
-          .json({ message: "You don't have permission for this action" });
-      }
+    if (req.user.role === "admin") {
+      let collection = req.body;
+      if (!Array.isArray(collection))
+        return res.status(400).send({ message: "invalid body" });
+      category.deleteMany({ _id: { $in: collection } }).then(docs => {
+          category
+            .find({})
+            .then((categories) => {
+              const catList = createCateList(categories);
+              res.status(200).send(catList);
+            })
+            .catch((error) => res.status(400).json({ error }));
+        }).catch(err => res.status(400).json(err));
+        
+     
+    } else {
+      res
+        .status(401)
+        .json({ message: "You don't have permission for this action" });
+    }
   } catch (error) {
     res.status(500).send(error);
   }

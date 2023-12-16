@@ -39,31 +39,24 @@ exports.createProduct = async (req, res) => {
         }
 
         const totalQuantity = await Product_variant.aggregate([
-          { $match: { product_id: mongoose.Types.ObjectId(prod._id) } },
+          { $match: { product_id: new mongoose.Types.ObjectId(prod._id) } },
           { $group: { _id: null, total: { $sum: "$quantity" } } },
         ]).exec();
 
         const ProductTotalQuantity = totalQuantity[0]?.total || 0;
-        Product.findOne({ name: prod.name }).exec((error, foundProd) => {
-          if (error)
-            res
-              .status(500)
-              .send({ message: "There has been an error with this request" });
-          else if (foundProd == null) {
-            prod.save((error, products) => {
-              if (error) {
-                res.status(400).send(error);
-              } else {
+        Product.findOne({ name: prod.name }).then((foundProd) => {
+          if (foundProd == null) {
+            prod.save().then(products => {
                 res.send(products);
-              }
-            });
+            
+            }).catch(error => res.status(400).json(error));
           } else {
             res.status(400).send({
               message:
                 "Product already exists, are you sure you don't want to update?",
             });
           }
-        });
+        }).catch(error => res.status(500).json(error));
       } else {
         res.status(400).send({ message: "product_variants is missing" });
       }
@@ -86,17 +79,14 @@ exports.getProductDetails = (req, res) => {
   try {
     const { product } = req.params;
 
-    Product.findOne({ slug: product }).exec((error, prod) => {
-      if (error) {
-        res.status(400).json(error);
-      } else {
+    Product.findOne({ slug: product }).then(prod => {
         if (prod != null) {
           res.send(prod);
         } else {
           res.status(404).send({ message: "Specified product doesn't exist" });
         }
-      }
-    });
+  
+    }).catch(err => res.status(500).send(err));
   } catch (error) {
     res.status(400).json(error);
   }
@@ -107,16 +97,13 @@ exports.deleteProduct = (req, res) => {
   try {
     if (req.user.role === "admin") {
       const { id } = req.params;
-      Product.deleteOne({ _id: id }, (err, success) => {
-        if (!err) {
-          Product_variant.deleteMany({ product_id: id }, (error, success) => {
-            if (!error) retrieveAllProducts(res);
-            else res.status(400).send(error);
-          });
-        } else {
-          res.status(400).send(err);
-        }
-      });
+      Product.deleteOne({ _id: id }).then(success => {
+          Product_variant.deleteMany({ product_id: id }).then(success => {
+             retrieveAllProducts(res);
+           
+          }).catch(err => res.status(400).json(err));
+       
+      }).catch(err => res.status(500).json(err));
     } else {
       res
         .status(403)
@@ -202,7 +189,7 @@ exports.updateProduct = async (req, res) => {
         })
           .lean()
           .exec();
-        console.log(productV);
+
         if (productV.length > 0) {
           await product_variant.findOneAndUpdate(
             { $and: [{ size: variant.size }, { product_id: id }] },
@@ -216,7 +203,6 @@ exports.updateProduct = async (req, res) => {
             quantity: variant.quantity,
             product_id: id,
           });
-          console.log(variant);
           await v.save();
         }
       }
@@ -224,11 +210,11 @@ exports.updateProduct = async (req, res) => {
     } else {
       res
         .status(403)
-        .send({ message: "You are not authorized for this action" });
+        .json({ message: "You are not authorized for this action" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
+   
+    res.status(500).json({
       message: "There has been an issue with the update request",
     });
   }
@@ -246,7 +232,7 @@ async function retrieveAllProducts(res) {
         .exec();
 
       const totalQuantity = await Product_variant.aggregate([
-        { $match: { product_id: mongoose.Types.ObjectId(product._id) } },
+        { $match: { product_id: new mongoose.Types.ObjectId(product._id) } },
         { $group: { _id: null, total: { $sum: "$quantity" } } },
       ]).exec();
 
@@ -256,6 +242,6 @@ async function retrieveAllProducts(res) {
 
     res.status(200).send(products);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 }

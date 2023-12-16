@@ -9,12 +9,16 @@ chai.use(chaiHttp);
 
 describe("Unit Tests", () => {
   after((done) => {
-    mongoose.connection.db.dropDatabase(() => {
-      mongoose.connection.close(() => {
+    mongoose.connection.db.dropDatabase().then( res => {
+      mongoose.connection.close().then(x=> {
         console.log("Database successfully cleared");
         done();
       });
-    });
+    }).catch(error => {
+        console.log(error);
+        done();
+
+    } );
   });
 
   let access_token;
@@ -321,6 +325,7 @@ describe("Unit Tests", () => {
           chai.request(server)
             .get("/api/product/getProduct")
             .end((err,res) =>{
+
               res.should.have.status(200);
               product = res.body[0];
               done()

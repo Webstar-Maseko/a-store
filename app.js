@@ -20,7 +20,7 @@ const CartRoute = require("./Routes/cartRoute");
 const port = process.env.port || 5000;
 const moncon= process.env.NODE_ENV ==="test"? "mongodb://127.0.0.1:27017/eCommerceTest" : process.env.Mongo || "mongodb://l127.0.0.1:27017/eCommerce";
 
-mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:false, useCreateIndex:true});
+mong.connect(moncon, {useNewUrlParser:true, useUnifiedTopology:true});
 
 app.use(exp.urlencoded({extended:true}))
 app.use(session({secret:process.env.secret, resave:false, saveUninitialized:false}));
