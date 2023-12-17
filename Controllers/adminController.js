@@ -9,7 +9,7 @@ exports.register = (req, res) => {
     if(req.body.email){
       User.findOne({email:req.body.email}).then((user) =>{
           if(user != null)
-            res.status(400).json({name:"UserExistsError",message: "User with the specified email has already beeen registered. Please log in."})
+            res.status(400).json({name:"UserExistsError",message: "User with the specified email has already been registered. Please log in."})
           else{
             if (req.body.username) {
               if (req.body.password) {
@@ -32,7 +32,7 @@ exports.register = (req, res) => {
                         const validationErrors = Object.values(err.errors).map((err) => err.message);
                         res.status(400).json({ errors: validationErrors });
                       }else if(err.code === 11000){
-                        res.status(400).json({message: "User with the specified email has already been registered, please log in."})
+                        res.status(400).json({message: "User with the specified email has already been registered. Please log in."})
                       }
                       else{
                         res.status(400).send(err);
@@ -59,6 +59,8 @@ exports.register = (req, res) => {
       ).catch(error =>{
         res.status(400).send({error});
       })
+    }else{
+      res.status(400).json({message:"Email is required."})
     }
 
   } catch (error) {
