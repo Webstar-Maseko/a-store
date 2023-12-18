@@ -114,6 +114,8 @@ router.get("/product/:root/:sub/:category", getCategoryProduct);
  * @swagger
  * /product/create:
  *  post:
+ *    security:
+ *      - bearerAuth: []
  *    summary: adds a new product
  *    description: adds a new new product under a category
  *    tags:
@@ -144,6 +146,8 @@ router.post("/product/create",verifyUser, upload.array("img"), createProduct);
  * @swagger
  * /product/delete/{id}:
  *  delete:
+ *    security:
+ *      - bearerAuth: []
  *    summary: deletes a product
  *    description: deletes a product
  *    tags:
@@ -170,6 +174,8 @@ router.delete("/product/delete/:id",verifyUser, deleteProduct);
  * @swagger
  * /product/update/{id}:
  *  put:
+ *    security:
+ *      - bearerAuth: []
  *    summary: updates the current products with specified updates
  *    description: Used to update the product information
  *    tags:

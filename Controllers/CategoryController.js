@@ -56,7 +56,7 @@ exports.createCategory = (req, res) => {
         cat
           .save()
           .then((categ) => {
-            console.log("blocks here");
+           
             category
               .find({})
               .then((categories) => {

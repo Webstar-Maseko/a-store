@@ -26,6 +26,8 @@ const upload = multer({ storage: storage });
  * @swagger
  * /category/create:
  *  post:
+ *    security:
+ *      - bearerAuth: []
  *    tags:
  *      - Category
  *    summary: Used to create product categories
@@ -65,6 +67,8 @@ router.post("/category/create",verifyUser ,upload.array("img"), createCategory);
  * @swagger
  * /category/deleteCategory:
  *  delete:
+ *    security:
+ *      - bearerAuth: []
  *    tags:
  *      - Category
  *    summary: used to delete a category or categories
