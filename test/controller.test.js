@@ -176,7 +176,7 @@ describe("Unit Tests", () => {
             .request(server)
             .post("/api/category/create")
             .set("Authorization", "Bearer " + access_token)
-            .send({ name: "Men" })
+            .send({ name: "Men", parentId:null })
             .end((err, res) => {
               res.should.have.status(200);
               done();

@@ -48,7 +48,7 @@ exports.createCategory = (req, res) => {
           image: images,
         };
 
-        if (req.body.parentId != "") {
+        if (req.body.parentId != null || req.body.parentId != "") {
           cateG.parentId = req.body.parentId;
         }
 
