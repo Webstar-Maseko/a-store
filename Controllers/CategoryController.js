@@ -9,11 +9,10 @@ createCateList = (categories, parent_id = null) => {
   let cat;
   //Create an outer parent/root
   if (parent_id === null) {
-    cat = categories.filter((x) => JSON.stringify(x.parentId) == undefined);
+    cat = categories.filter((x) => x.parentId == undefined);
   }
   //Create a child of a parent
   else {
-    console.log(categories.map(x => x))
     cat = categories.filter((x) => JSON.stringify(x.parentId) == JSON.stringify(parent_id));
     
   }
@@ -49,7 +48,7 @@ exports.createCategory = async (req, res) => {
           name: req.body.name,
           slug: slug(req.body.name),
           image: images,
-          parentId : req.body.parentId == null ? null : await category.findOne({_id:req.body.parentId}).then(category => category ? req.body.parentId : null).catch(err => null)
+          parentId : req.body.parentId == null || req.body.parentId ==""  ? null : await category.findOne({_id:req.body.parentId}).then(category => category ? req.body.parentId : null).catch(err => null)
         };
 
       
@@ -58,13 +57,7 @@ exports.createCategory = async (req, res) => {
           .save()
           .then((categ) => {
            
-            category
-              .find({})
-              .then((categories) => {
-                const catList = createCateList(categories);
-                res.status(200).send(catList);
-              })
-              .catch((error) => res.status(400).send(error));
+            retrieveAllCategories(res)
           })
           .catch((err) => {
 
@@ -91,13 +84,7 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.getCategory = (req, res) => {
-  category
-    .find({})
-    .then((categories) => {
-      const catList = createCateList(categories);
-      res.send(catList);
-    })
-    .catch((error) => res.send(error));
+  retrieveAllCategories(res);
 };
 
 exports.deleteCategory = (req, res) => {
@@ -108,13 +95,7 @@ exports.deleteCategory = (req, res) => {
         return res.status(400).send({ message: "invalid body" });
       else{
         category.deleteMany({ _id: { $in: collection } }).then(docs => {
-          category
-            .find({})
-            .then((categories) => {
-              const catList = createCateList(categories);
-              res.status(200).send(catList);
-            })
-            .catch((error) => res.status(400).json({ error }));
+          retrieveAllCategories(res);
         }).catch(err => res.status(400).json(err));
       }
       
@@ -128,3 +109,14 @@ exports.deleteCategory = (req, res) => {
     res.status(500).send(error);
   }
 };
+
+
+const retrieveAllCategories = (res) =>{
+  category
+  .find({})
+  .then((categories) => {
+    const catList = createCateList(categories);
+    res.status(200).send(catList);
+  })
+  .catch((error) => res.status(400).json({ error }));
+}
