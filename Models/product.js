@@ -10,6 +10,8 @@ const mongoose = require("mongoose");
  *              name: 
  *                  type: string
  *                  required: true
+ *                  minLength: 3
+ *                  maxLength: 90
  *              slug:
  *                  type: string
  *                  requiried: true
@@ -52,7 +54,9 @@ const productSchema = new Schema({
     
     name:{
         type: String,
-        required: true
+        required: true,
+        minLength:5,
+        maxLength:90,
     },
     slug:{
         type:String,

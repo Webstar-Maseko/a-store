@@ -1,6 +1,7 @@
 const slug = require("slug");
 const { findByIdAndDelete } = require("../Models/category");
 const category = require("../Models/category");
+const ValidationError = require("../Utils/ValidationError");
 
 //Create arrays of category nest them by parents
 createCateList = (categories, parent_id = null) => {
@@ -8,11 +9,13 @@ createCateList = (categories, parent_id = null) => {
   let cat;
   //Create an outer parent/root
   if (parent_id === null) {
-    cat = categories.filter((x) => x.parentId == undefined);
+    cat = categories.filter((x) => JSON.stringify(x.parentId) == undefined);
   }
   //Create a child of a parent
   else {
-    cat = categories.filter((x) => x.parentId == parent_id);
+    console.log(categories.map(x => x))
+    cat = categories.filter((x) => JSON.stringify(x.parentId) == JSON.stringify(parent_id));
+    
   }
 
   for (let c of cat) {
@@ -29,7 +32,7 @@ createCateList = (categories, parent_id = null) => {
 };
 
 //create a category
-exports.createCategory = (req, res) => {
+exports.createCategory = async (req, res) => {
   try {
     if (req.user != undefined) {
       if (req.user.role === "admin") {
@@ -46,12 +49,10 @@ exports.createCategory = (req, res) => {
           name: req.body.name,
           slug: slug(req.body.name),
           image: images,
+          parentId : req.body.parentId == null ? null : await category.findOne({_id:req.body.parentId}).then(category => category ? req.body.parentId : null).catch(err => null)
         };
 
-        if (req.body.parentId != null || req.body.parentId != "") {
-          cateG.parentId = req.body.parentId;
-        }
-
+      
         const cat = new category(cateG);
         cat
           .save()
@@ -61,11 +62,20 @@ exports.createCategory = (req, res) => {
               .find({})
               .then((categories) => {
                 const catList = createCateList(categories);
-                res.send(catList);
+                res.status(200).send(catList);
               })
               .catch((error) => res.status(400).send(error));
           })
-          .catch((err) => res.status(400).json(err));
+          .catch((err) => {
+
+            if(err.name == "ValidationError"){
+              ValidationError(err, res);
+            }else{
+              res.status(400).json(err)
+            }
+            
+          
+          });
       } else {
         res
           .status(403)
@@ -96,7 +106,8 @@ exports.deleteCategory = (req, res) => {
       let collection = req.body;
       if (!Array.isArray(collection))
         return res.status(400).send({ message: "invalid body" });
-      category.deleteMany({ _id: { $in: collection } }).then(docs => {
+      else{
+        category.deleteMany({ _id: { $in: collection } }).then(docs => {
           category
             .find({})
             .then((categories) => {
@@ -105,11 +116,12 @@ exports.deleteCategory = (req, res) => {
             })
             .catch((error) => res.status(400).json({ error }));
         }).catch(err => res.status(400).json(err));
-        
+      }
+      
      
     } else {
       res
-        .status(401)
+        .status(403)
         .json({ message: "You don't have permission for this action" });
     }
   } catch (error) {

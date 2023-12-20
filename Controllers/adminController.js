@@ -2,6 +2,7 @@ const { getToken } = require("../Authentication/Authenticate");
 const { tokenSpan } = require("../Constants/Constants");
 const User = require("../Models/user");
 const passport = require("passport");
+const ValidationError = require("../Utils/ValidationError");
 
 exports.register = (req, res) => {
   try {
@@ -29,8 +30,7 @@ exports.register = (req, res) => {
                       res.status(200).send({ success: true, access_token, expiresIn:tokenSpan });
                     } else {
                       if(err.name === "ValidationError"){
-                        const validationErrors = Object.values(err.errors).map((err) => err.message);
-                        res.status(400).json({ errors: validationErrors });
+                        ValidationError(err,res);
                       }else if(err.code === 11000){
                         res.status(400).json({message: "User with the specified email has already been registered. Please log in."})
                       }

@@ -29,9 +29,12 @@ const { model, Schema } = require("mongoose");
  */
 const CategorySchema = new Schema(
   {
-    name: String,
+    name: {
+      type:String,
+      minlength:3,
+      maxlength: 80},
     slug: { type: String },
-    parentId: String,
+    parentId: Schema.Types.ObjectId,
     image: [ {
         img : {type: String, required: true}
 
