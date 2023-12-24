@@ -41,7 +41,8 @@ const cartSchema = new Schema({
         quantity: {type: Number, default:1},
         color:{type:String},
         price:{type: Number, required: true}
-    }]
+    }],
+    totalPrice: {type:Number, required:true}
   
 }, {timestamps:true})
 
