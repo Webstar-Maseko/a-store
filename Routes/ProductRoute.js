@@ -125,6 +125,8 @@ router.get("/product/:root/:sub/:category", getCategoryProduct);
  *      content:
  *        application/json:
  *          schema:
+ *            type: object
+ *            example: {'name':String,'sku':String,'color':String,'price':Number,'description':String,'category':ObjectId,'images':[{'img':String}],'product_variants':[{'size':"Medium",'quantity':5},{'size':"small",'quantity':10}]}
  *            $ref: '#/components/schemas/Product'
  *    responses:
  *      '200':

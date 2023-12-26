@@ -29,7 +29,6 @@ exports.createProduct = async (req, res) => {
           images: images,
           addedBy: req.user._id,
           category: req.body.category,
-          color: req.body.color,
           sku: req.body.sku,
         });
 
