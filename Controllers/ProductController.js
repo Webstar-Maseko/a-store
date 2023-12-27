@@ -30,6 +30,7 @@ exports.createProduct = async (req, res) => {
           addedBy: req.user._id,
           category: req.body.category,
           sku: req.body.sku,
+          color:req.body.color
         });
 
         for (const variant of variants) {

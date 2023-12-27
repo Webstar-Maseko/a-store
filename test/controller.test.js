@@ -257,7 +257,6 @@ describe("Unit Tests", () => {
         name: "shirt blues",
         price: 150,
         description: "some new shirt",
-     
         color: "blue",
         sku: "12345",
         product_variants: [
@@ -291,6 +290,7 @@ describe("Unit Tests", () => {
           .set("Authorization", "Bearer "+access_token)
           .send(prodBody)
           .end((err,res) => {
+            console.log(res.body)
             product = res.body;
             res.should.have.status(200);
             done();

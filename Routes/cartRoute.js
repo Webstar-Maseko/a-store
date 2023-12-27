@@ -18,7 +18,8 @@ const router = exp.Router();
  *          content:
  *              application/json:
  *                  schema:
- *                      $ref: '#components/schemas/Cart'
+ *                      type: Object
+ *                      example: {"product": "65805607cb0bdbd0ba66997e","quantity": 2}
  *      responses:
  *          '200':
  *              description: Ok

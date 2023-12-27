@@ -15,7 +15,7 @@ const {model, Schema} = require("mongoose");
  *                  items:
  *                      type: object
  *                      properties:
- *                          product: 
+ *                          product_id: 
  *                              type: string
  *                              required: true
  *                          quantity:
@@ -24,10 +24,8 @@ const {model, Schema} = require("mongoose");
  *                              default: 1
  *                          color:
  *                              type: string
- *                              required: true
  *                          size:
  *                              type: string
- *                              required: true
  *                          price:
  *                               type: number
  *                               required: true
@@ -37,7 +35,7 @@ const cartSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: "user", required: true},
 
     cartItems: [{
-        product: {type: Schema.Types.ObjectId, ref: "product", required: true},
+        product_id: {type: Schema.Types.ObjectId, ref: "product", required: true},
         quantity: {type: Number, default:1},
         color:{type:String},
         price:{type: Number, required: true}
